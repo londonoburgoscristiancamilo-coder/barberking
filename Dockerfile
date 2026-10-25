@@ -23,5 +23,9 @@ RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiar permisos de usuario
-USER root
+# Copiar el script de entrada y darle permisos de ejecución
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Definir el entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
