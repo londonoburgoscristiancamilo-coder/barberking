@@ -13,10 +13,10 @@
     <!-- Tailwind CSS v4 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-[#FDFBF7] text-[#5C4033] flex items-center justify-center min-h-screen p-4 selection:bg-[#B87333] selection:text-white">
+<body class="bg-[#F3EFE4] text-[#5C4033] flex items-center justify-center min-h-screen p-4 selection:bg-[#B87333] selection:text-white">
 
     <!-- Contenedor Principal Estilo Móvil / Tarjeta Central -->
-    <main class="w-full max-w-md bg-[#FDFBF7] flex flex-col items-center justify-between px-6 py-10 text-center min-h-[85vh] rounded-3xl">
+    <main class="w-full max-w-md bg-[#F3EFE4] flex flex-col items-center justify-between px-6 pb-10 -mt-15 text-center rounded-3xl"> <!-- min-h-[85vh] -->
         
         <!-- Espacio superior / Navegación -->
         <div class="w-full flex justify-end">
@@ -30,39 +30,40 @@
         </div>
 
         <!-- Sección del Logo y Marca -->
-        <div class="flex flex-col items-center my-auto w-full">
-            <!-- Logo Circular -->
-            <div class="w-32 h-32 rounded-full border border-[#D4A373]/50 flex items-center justify-center mb-6 shadow-sm bg-white/40 overflow-hidden p-2">
-                <img src="{{ asset('storage/images/logo.webp') }}" alt="Logo BarberKing" class="w-full h-full object-contain">
+        <div class="flex flex-col items-center w-full">
+            
+            <!-- Logo -->
+            <div class="w-60 h-60 flex items-center justify-center overflow-hidden">
+                <img src="{{ asset('storage/images/logo_cropped.webp') }}" alt="Logo BarberKing" class="w-full h-full object-contain">
             </div>
-
-            <!-- Títulos -->
-            <h1 class="text-3xl font-bold tracking-tight text-[#4A3525]">Barber<span class="text-[#B87333]">King</span></h1>
-            <p class="text-xs uppercase tracking-widest text-[#B87333] font-semibold mt-1 mb-8">Barbería & Estilo</p>
-
-            <div class="w-12 h-[1px] bg-[#D4A373]/40 mx-auto mb-8"></div>
+            
+            <!-- Separador -->
+            <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto mt-8 mb-8"></div>
 
             <!-- Copy / Eslogan -->
-            <h2 class="text-2xl font-semibold text-[#4A3525] mb-3">
+            <h2 class="text-5xl font-semibold text-[#A66F4F] mb-3">
                 Descubre Tu Estilo Personal.
             </h2>
-            <p class="text-sm text-[#7F6A55] max-w-xs leading-relaxed mb-10">
+            <p class="text-xl text-[#201917] max-w-xs leading-snug mt-4 mb-8">
                 Reserva citas, encuentra barberos expertos y explora guías de estilo.
             </p>
+
+            <!-- Separador -->
+            <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto mb-12"></div>
         </div>
 
         <!-- Botones de Acción con Jerarquía -->
-        <div class="w-full flex flex-col gap-3.5 mt-auto">
+        <div class="w-full flex flex-col gap-3.5">
             @if (Route::has('register'))
                 <a href="{{ route('register') }}" 
-                   class="w-full py-3.5 px-6 bg-[#B87333] hover:bg-[#A0622A] text-white font-medium rounded-full shadow-md transition duration-200 text-center block">
+                   class="w-full py-3.5 px-6 bg-[#B46846] hover:bg-[#A0622A] text-white text-xl font-medium rounded-full shadow-md transition duration-200 text-center block">
                     Crear Cuenta
                 </a>
             @endif
 
             @if (Route::has('login'))
                 <a href="{{ route('login') }}" 
-                   class="w-full py-3.5 px-6 bg-transparent border border-[#B87333] text-[#B87333] hover:bg-[#B87333]/10 font-medium rounded-full transition duration-200 text-center block">
+                   class="w-full py-3.5 px-6 bg-[#F1EFE2] border-2 border-[#9B694C] text-[#9B694C] text-xl hover:bg-[#B87333]/10 font-medium rounded-full transition duration-200 text-center block">
                     Iniciar Sesión
                 </a>
             @endif
