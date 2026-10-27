@@ -7,6 +7,9 @@
 
         <title>{{ config('app.name', 'BarberKing') }}</title>
 
+        <!-- Logo BarberKing -->
+        <link rel="icon" type="image/svg+xml" href="{{ asset('storage/images/logo.ico') }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
