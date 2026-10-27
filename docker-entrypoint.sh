@@ -1,10 +1,23 @@
 #!/bin/bash
 
-# Instalar dependencias de Node si aún no están instaladas
+# Instalar dependencias de PHP si la carpeta vendor no existe
+if [ ! -d "vendor" ]; then
+    echo "Instalando dependencias de PHP por primera vez..."
+    composer install
+fi
+
+# Instalar dependencias de Node si aún no están instaladas y ejecutando script necesario para TailwindCSS
 if [ ! -d "node_modules" ]; then
     echo "Instalando dependencias de Node por primera vez..."
     npm install
+    npm install @tailwindcss/postcss
 fi
+
+# Crear carpetas temporales de Laravel si Git las ignoró y ajustar permisos
+echo "Verificando estructura de carpetas y permisos..."
+mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions storage/logs
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 # Esperar a que la base de datos esté lista antes de migrar
 echo "Esperando a que la base de datos esté lista..."
@@ -26,9 +39,9 @@ if [ ! -d "public/storage" ]; then
     php artisan storage:link
 fi
 
-# Iniciar el servidor local en desarrollo (npm run dev) en segundo plano con el flag --host para que sea accesible
-echo "Levantando servidor de desarrollo..."
-npm run dev -- --host &
+# Compilar assets estáticos al iniciar el contenedor
+echo "Compilando assets estáticos con Vite..."
+npm run build
 
 # Iniciar el proceso principal de PHP-FPM
 exec php-fpm
