@@ -10,7 +10,6 @@ fi
 if [ ! -d "node_modules" ]; then
     echo "Instalando dependencias de Node por primera vez..."
     npm install
-    npm install @tailwindcss/postcss
 fi
 
 # Crear carpetas temporales de Laravel si Git las ignoró y ajustar permisos
