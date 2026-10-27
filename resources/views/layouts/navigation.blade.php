@@ -1,6 +1,5 @@
 <div x-data="{ open: false }">
-    <!-- Botón Hamburguesa Fijo -->
-    <!-- Botón Hamburguesa Fijo -->
+    
     <!-- Botón Hamburguesa Absoluto (se desplaza con la página) -->
     <button @click="open = !open" :class="{ 'border-main hover:bg-main/5': open, 'border-main hover:bg-main/10': !open }"
         class="absolute top-4.5 right-4 sm:right-6 lg:right-8 z-60 w-10 h-10 rounded-full border flex items-center justify-center focus:outline-none transition-colors duration-300">
