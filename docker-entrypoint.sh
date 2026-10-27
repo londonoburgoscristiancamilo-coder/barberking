@@ -20,6 +20,12 @@ php artisan migrate --force
 echo "Verificando y ejecutando seeders de base de datos..."
 php artisan db:seed --force
 
+# Crear el enlace simbólico si no existe
+if [ ! -d "public/storage" ]; then
+    echo "Creando enlace simbólico del storage..."
+    php artisan storage:link
+fi
+
 # Iniciar el servidor local en desarrollo (npm run dev) en segundo plano con el flag --host para que sea accesible
 echo "Levantando servidor de desarrollo..."
 npm run dev -- --host &
