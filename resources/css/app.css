@@ -15,5 +15,16 @@
 }
 
 @theme {
-  --font-sans: 'InterCustom', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'InterCustom', ui-sans-serif, system-ui, sans-serif;
+
+    --color-main: #D9A382;
+    --color-secundary: #252C27;
+    --color-base: #F5F1E9;
+    --color-base-light: #FAF7F2;
+    --color-white: #FFFDFA;
+    --color-main-green: #252723;
+    --color-muted: #787970;
+    --color-muted-light: #B5BCAF;
+    --color-action: #A74F32;
+    --color-border-light: #E3DED4;
 }
