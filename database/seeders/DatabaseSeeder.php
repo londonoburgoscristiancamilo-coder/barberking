@@ -16,9 +16,11 @@ class DatabaseSeeder extends Seeder
         // Crea 10 usuarios de prueba
         User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Admin Barber',
-            'email' => 'admin@barberking.com',
-        ]);
+        if (!User::where('email', 'admin@barberking.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Admin Barber',
+                'email' => 'admin@barberking.com',
+            ]);
+        }
     }
 }
