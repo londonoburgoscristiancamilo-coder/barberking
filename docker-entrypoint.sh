@@ -17,9 +17,11 @@ echo "Verificando y ejecutando migraciones de base de datos..."
 php artisan migrate --force
 
 # Ejecutar seeders automáticamente si las tablas están vacías
+echo "Verificando y ejecutando seeders de base de datos..."
 php artisan db:seed --force
 
 # Iniciar el servidor local en desarrollo (npm run dev) en segundo plano con el flag --host para que sea accesible
+echo "Levantando servidor de desarrollo..."
 npm run dev -- --host &
 
 # Iniciar el proceso principal de PHP-FPM
