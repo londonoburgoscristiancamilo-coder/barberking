@@ -7,7 +7,7 @@
             <div class="space-y-2">
                 <x-input-label for="name" :value="__('Nombre')" class="text-sm font-medium text-gray-700" />
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B;">
+                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
                         <i class="fa-regular fa-user text-xl"></i>
                     </span>
                     <x-text-input id="name" class="block w-full py-3.5 pl-14 pr-4" type="text" name="name" :value="old('name')" placeholder="Nombre Apellido" required autofocus autocomplete="name" />
@@ -19,7 +19,7 @@
             <div class="space-y-2">
                 <x-input-label for="email" :value="__('Correo')" class="text-sm font-medium text-gray-700" />
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B;">
+                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
                         <i class="fa-regular fa-envelope text-xl"></i>
                     </span>
                     <x-email-input id="email" class="block w-full py-3.5 pl-14 pr-4" type="email" name="email" :value="old('email')" placeholder="correo@dominio.com" required autocomplete="username" />
@@ -31,7 +31,7 @@
             <div class="space-y-2">
                 <x-input-label for="password" :value="__('Contraseña')" class="text-sm font-medium text-gray-700" />
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B;">
+                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
                         <i class="fa-solid fa-lock text-xl"></i>
                     </span>
                     <x-password-input id="password" class="block w-full py-3.5 pl-14 pr-4" type="password" name="password" placeholder="********" required autocomplete="new-password" />
@@ -43,7 +43,7 @@
             <div class="space-y-2">
                 <x-input-label for="password_confirmation" :value="__('Repetir Contraseña')" class="text-sm font-medium text-gray-700" />
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B;">
+                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
                         <i class="fa-solid fa-lock text-xl"></i>
                     </span>
                     <x-password-input id="password_confirmation" class="block w-full py-3.5 pl-14 pr-4" type="password" name="password_confirmation" placeholder="********" required autocomplete="new-password" />

@@ -49,7 +49,7 @@
             <h2 class="text-5xl font-semibold text-[#A66F4F] mb-3">
                 Descubre Tu Estilo Personal.
             </h2>
-            <p class="text-xl text-[#201917] max-w-xs leading-snug mt-4 mb-8">
+            <p class="text-xl text-[#201917] max-w-xs leading-snug mt-4 mb-8" style="opacity: 70%;">
                 Reserva citas, encuentra barberos expertos y explora guías de estilo.
             </p>
 
