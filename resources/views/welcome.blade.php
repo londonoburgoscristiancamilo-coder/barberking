@@ -36,8 +36,10 @@
         <div class="flex flex-col items-center w-full">
             
             <!-- Logo -->
-            <div class="w-60 h-60 flex items-center justify-center overflow-hidden">
-                <img src="{{ asset('storage/images/logo_cropped.webp') }}" alt="Logo BarberKing" class="w-full h-full object-contain">
+            <div>
+                <a href="/">
+                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                </a>
             </div>
             
             <!-- Separador -->
