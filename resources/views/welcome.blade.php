@@ -43,7 +43,7 @@
             </div>
             
             <!-- Separador -->
-            <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto mt-8 mb-8"></div>
+            <div class="w-20 h-0.75 bg-[#A97351]/40 mx-auto mt-8 mb-8"></div>
 
             <!-- Copy / Eslogan -->
             <h2 class="text-5xl font-semibold text-[#A66F4F] mb-3">
@@ -54,7 +54,7 @@
             </p>
 
             <!-- Separador -->
-            <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto mb-12"></div>
+            <div class="w-20 h-0.75 bg-[#A97351]/40 mx-auto mb-12"></div>
         </div>
 
         <!-- Botones de Acción con Jerarquía -->

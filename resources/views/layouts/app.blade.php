@@ -23,14 +23,14 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-base">
 
             <!-- Menú lateral controlado por la nueva propiedad -->
             @if($showMenu)
                 @include('layouts.navigation')
             @endif
 
-            <!-- Header por defecto -->
+            <!-- Header por defecto --> 
             @if($showHeader)
                 <x-header />
             @endif
