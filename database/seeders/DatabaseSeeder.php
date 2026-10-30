@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
                 'email' => 'admin@barberking.com',
             ]);
         }
+
+        $this->call([
+            ServiciosSeeder::class,
+        ]);
     }
 }
