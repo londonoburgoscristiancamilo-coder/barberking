@@ -16,7 +16,7 @@ class ServiciosController extends Controller
 
     public function create()
     {
-        
+        return view('servicios.create');
     }
 
     public function store(Request $request)

@@ -3,9 +3,9 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center mb-6">
             <x-title-section titulo="Servicios" subtitulo="Catálogo de la barbería" />
             <div>
-                <x-action-link href="#">
+                <x-action-rounded-link href="{{ route('servicios.create') }}">
                     <i class="fa-solid fa-plus"></i>
-                </x-action-link>
+                </x-action-rounded-link>
             </div>
         </div>
 
