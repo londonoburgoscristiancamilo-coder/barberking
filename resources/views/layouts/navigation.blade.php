@@ -42,7 +42,7 @@
                 class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Citas</a>
             <a href="#"
                 class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Horarios</a>
-            <a href="#"
+            <a href="{{ route('servicios.index') }}"
                 class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Servicios</a>
             <a href="{{ route('profile.edit') }}"
                 class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Perfil</a>
