@@ -1,4 +1,13 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+/* Vistas Blade */
+@source "../views/**/*.blade.php";
+
+/* Código PHP de la aplicación */
+@source "../../app/**/*.php";
+
+/* Códgio JS de la app */
+@source "../js/**/*.js";
 
 @font-face {
     font-family: 'InterCustom';
