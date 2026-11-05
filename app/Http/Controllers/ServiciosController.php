@@ -9,7 +9,7 @@ class ServiciosController extends Controller
 {
     public function index()
     {
-        $servicios = \App\Models\Servicios::all();
+        $servicios = Servicios::all();
     
         return view('servicios.index', compact('servicios'));
     }
