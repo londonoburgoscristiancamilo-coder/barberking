@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiciosController;
+use App\Http\Controllers\HorariosController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('servicios', ServiciosController::class);
+    Route::resource('horarios', HorariosController::class);
 });
 
 require __DIR__.'/auth.php';

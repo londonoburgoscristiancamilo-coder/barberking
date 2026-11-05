@@ -37,15 +37,29 @@
         <!-- Lista de enlaces con borde derecho -->
         <div class="flex flex-col items-end gap-3 border-r border-main pr-4 mr-2">
             <a href="{{ route('dashboard') }}"
-                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Inicio</a>
+               class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
+                Inicio
+            </a>
+
             <a href="#"
-                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Citas</a>
-            <a href="#"
-                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Horarios</a>
+               class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
+               Citas
+            </a>
+
+            <a href="{{ route('horarios.index') }}"
+               class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
+               Horarios
+            </a>
+
             <a href="{{ route('servicios.index') }}"
-                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Servicios</a>
+               class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
+               Servicios
+            </a>
+            
             <a href="{{ route('profile.edit') }}"
-                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">Perfil</a>
+               class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
+               Perfil
+            </a>
 
             <!-- Cerrar Sesión -->
             <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">

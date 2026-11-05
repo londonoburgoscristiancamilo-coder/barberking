@@ -20,11 +20,13 @@ class DatabaseSeeder extends Seeder
             User::factory()->create([
                 'name' => 'Admin Barber',
                 'email' => 'admin@barberking.com',
+                'password' => bcrypt('1234554321'),
             ]);
         }
 
         $this->call([
             ServiciosSeeder::class,
+            HorariosSeeder::class,
         ]);
     }
 }

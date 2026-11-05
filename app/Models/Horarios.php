@@ -13,7 +13,7 @@ class Horarios extends Model
     
     protected $fillable = [
         'barbero_id',
-        'dia_semana',
+        'fecha',
         'hora_inicio',
         'hora_fin',
         'hora_inicio_descanso',
