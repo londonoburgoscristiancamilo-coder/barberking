@@ -1,5 +1,5 @@
 <div x-data="{ open: false }">
-    
+
     <!-- Botón Hamburguesa Absoluto (se desplaza con la página) -->
     <button @click="open = !open" :class="{ 'border-main hover:bg-main/5': open, 'border-main hover:bg-main/10': !open }"
         class="absolute top-4.5 right-4 sm:right-6 lg:right-8 z-60 w-10 h-10 rounded-full border flex items-center justify-center focus:outline-none transition-colors duration-300">
@@ -36,7 +36,7 @@
 
         <!-- Lista de enlaces con borde derecho -->
         <div class="flex flex-col items-end gap-3 border-r border-main pr-4 mr-2">
-            <a href="{{ route('dashboard') }}"
+            <a href="{{ route('dashboard.index') }}"
                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
                 Inicio
             </a>
@@ -55,7 +55,7 @@
                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
                Servicios
             </a>
-            
+
             <a href="{{ route('profile.edit') }}"
                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
                Perfil

@@ -28,7 +28,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Mensaje de bienvenida después del inicio de sesión
+        session()->flash(
+            'success',
+            '¡Bienvenido al panel de administración de BarberKing!'
+        );
+
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**

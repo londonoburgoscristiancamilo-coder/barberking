@@ -39,3 +39,17 @@
     --color-action: #A74F32;
     --color-border-light: #E3DED4;
 }
+
+/* Color del Checkmark de SweetAlert2 */
+.swal2-icon.swal2-success {
+    border-color: #D3A180 !important;
+    color: #D3A180 !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #D3A180 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: #D3A180 !important;
+}
