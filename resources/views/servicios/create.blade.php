@@ -18,13 +18,20 @@
                 <x-input-error :messages="$errors->get('nombre')" class="mt-1" />
             </div>
             <div>
-                <x-input-label for="duracion" :value="__('Duración')" class="text-lg" colorTexto='text-main-green' />
+                <x-input-label for="duracion_minutos" :value="__('Duración')" class="text-lg" colorTexto='text-main-green' />
                 <div class="relative flex items-center mt-2">
                     <span class="absolute left-5 pointer-events-none flex items-center text-muted/70">
                         <i class="fa-regular fa-clock"></i>
                     </span>
-                    <x-text-input id="duracion" class="block w-full py-3.5 pl-14 pr-4" type="text" name="duracion"
-                        placeholder="30 minutos" required />
+                    <x-select-input id="duracion_minutos" class="block w-full py-3.5 pl-14 pr-4" name="duracion_minutos"
+                        placeholder="30 minutos" required>
+                         <option value="">Selecciona una duración</option>
+                        <option value="30">30 minutos</option>
+                        <option value="45">45 minutos</option>
+                        <option value="60">1 hora</option>
+                        <option value="90">1 hora 30 minutos</option>
+                    </x-select-input>
+
                     <span class="absolute right-5 pointer-events-none flex items-center text-muted/70">
                         <i class="fa-solid fa-angle-down"></i>
                     </span>
@@ -45,10 +52,15 @@
                 </div>
                 <x-input-error :messages="$errors->get('precio')" class="mt-1" />
             </div>
+            <div>
+                <x-input-label for="descripcion" :value="__('Descripción')" class="text-lg" colorTexto='text-main-green' />
+                <x-textarea name="descripcion" rows="3" />
+                <x-input-error :messages="$errors->get('descripcion')" class="mt-1" />
+            </div>
+            <x-action-button type="submit">
+                <i class="fa-solid fa-plus"></i>
+                Crear Servicio
+            </x-action-button>
         </form>
-        <x-action-button>
-            <i class="fa-solid fa-plus"></i>
-            Crear Servicio
-        </x-action-button>
     </div>
 </x-app-layout>
