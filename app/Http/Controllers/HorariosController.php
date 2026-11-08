@@ -20,7 +20,7 @@ class HorariosController extends Controller
         $finSemana = Carbon::now()->endOfWeek();       // Domingo
 
         // Formatear el subtítulo dinámico (ej: "Turnos de trabajo · 2 - 8 de noviembre de 2026")
-        $subtitulo = "Turnos de trabajo · " . $inicioSemana->format('j') . " - " . $finSemana->format('j \d\e F \d\e Y');
+        $subtitulo = "Turnos de trabajo · " . $inicioSemana->format('j') . " - " . $finSemana->translatedFormat('j \d\e F \d\e Y');
 
         // Filtrar los horarios que correspondan a las fechas de esta semana
         $horarios = Horarios::with('barbero')
