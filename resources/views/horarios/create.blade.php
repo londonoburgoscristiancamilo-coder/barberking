@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-6 px-8 pb-28">
-        <div class="max-w-7xl mx-auto flex justify-between items-center mb-6">
+        <div class="mx-auto flex justify-between items-center mb-6">
             <x-title-section 
                 titulo="Nuevo horario"
                 subtitulo="Completa los detalles para crear un turno de trabajo."

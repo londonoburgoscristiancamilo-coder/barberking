@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-6 px-8">
-        <div class="max-w-7xl mx-auto flex justify-between items-center mb-6">
+        <div class="mx-auto flex justify-between items-center mb-6">
             <x-title-section titulo="Horarios" :subtitulo="$subtitulo" />
             <div>
                 <x-action-rounded-link href="{{ route('horarios.create') }}">

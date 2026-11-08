@@ -1,7 +1,7 @@
 <x-app-layout>
     <!-- Contenedor superior con fondo oscuro -->
     <div class="bg-[#252C27] text-white py-8 px-6 sm:px-8">
-        <div class="max-w-7xl mx-auto">
+        <div class="mx-auto">
             
             <!-- Saludo y Fecha -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-8">
@@ -61,7 +61,7 @@
     </div>
 
     <!-- Agenda -->
-    <div class="py-8 px-6 sm:px-8 max-w-7xl mx-auto">
+    <div class="py-8 px-6 sm:px-8 mx-auto">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-secundary">Tu agenda</h2>
         </div>
@@ -82,7 +82,10 @@
                     confirmButtonText: 'Aceptar',
                     confirmButtonColor: '#B46846',
                     timer: 5000,
-                    timerProgressBar: true
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'rounded-top-only'
+                    }
                 });
             });
         </script>
