@@ -7,7 +7,7 @@
                 rutaRegreso="{{ route('horarios.index') }}" />
         </div>
 
-        <form action="{{ route('horarios.store') }}" method="POST" id="form-horario" class="space-y-6 mt-6">
+        <form action="{{ route('horarios.store') }}" method="POST" id="form-horario" class="space-y-6 mt-6" novalidate>
             @csrf
 
             <!-- Barbero -->
@@ -130,7 +130,7 @@
             const horaFin = document.getElementById('hora_fin');
             const inicioDescanso = document.getElementById('hora_inicio_descanso');
             const finDescanso = document.getElementById('hora_fin_descanso');
-            
+
             const resumenDescanso = document.getElementById('resumen-descanso');
             const resumenTrabajo = document.getElementById('resumen-trabajo');
 
@@ -146,7 +146,7 @@
                 if (hInicio && hFin) {
                     let [iniH, iniM] = hInicio.split(':').map(Number);
                     let [finH, finM] = hFin.split(':').map(Number);
-                    
+
                     let totalMinInicio = iniH * 60 + iniM;
                     let totalMinFin = finH * 60 + finM;
 
@@ -158,7 +158,7 @@
                 if (dInicio && dFin) {
                     let [dIniH, dIniM] = dInicio.split(':').map(Number);
                     let [dFinH, dFinM] = dFin.split(':').map(Number);
-                    
+
                     let totalMinDInicio = dIniH * 60 + dIniM;
                     let totalMinDFin = dFinH * 60 + dFinM;
 

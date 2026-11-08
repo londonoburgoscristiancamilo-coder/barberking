@@ -3,7 +3,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <div class="w-full max-w-md mx-auto p-4 sm:p-6">
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        <form method="POST" action="{{ route('login') }}" class="space-y-6" novalidate>
             @csrf
 
             <!-- Correo -->
@@ -27,12 +27,12 @@
                     </span>
                     <x-password-input id="password" class="block w-full py-3.5 pl-14 pr-4" type="password" name="password" placeholder="********" required autocomplete="current-password" />
                 </div>
+                <x-input-error :messages="$errors->get('password')" class="mt-1" />
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="underline text-sm rounded-md" style="color: #9B694C; opacity: 0.7;">
                         {{ __('¿Olvidaste tu contraseña?') }}
                     </a>
                 @endif
-                <x-input-error :messages="$errors->get('password')" class="mt-1" />
             </div>
 
             <!-- Remember Me 

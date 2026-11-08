@@ -5,7 +5,7 @@
                 rutaRegreso="{{ route('servicios.index') }}" />
         </div>
 
-        <form action="{{ route('servicios.update', $servicio->id) }}" method="POST" class="space-y-4 mt-8">
+        <form action="{{ route('servicios.update', $servicio->id) }}" method="POST" class="space-y-4 mt-8" novalidate>
             @csrf
             @method('PUT')
 

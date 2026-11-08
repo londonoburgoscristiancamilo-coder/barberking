@@ -4,7 +4,7 @@
             <x-title-section titulo="Nuevo Servicio" subtitulo="Completa los detalles para crear un servicio"
                 rutaRegreso="{{ route('servicios.index') }}" />
         </div>
-        <form action="{{ route('servicios.store') }}" method="POST" class="space-y-4 mt-8">
+        <form action="{{ route('servicios.store') }}" method="POST" class="space-y-4 mt-8" novalidate>
             @csrf
             <div>
                 <x-input-label for="nombre" :value="__('Nombre del servicio')" class="text-lg" colorTexto='text-main-green' />

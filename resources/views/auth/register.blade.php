@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="w-full max-w-md mx-auto p-4 sm:p-6">
-        <form method="POST" action="{{ route('register') }}" class="space-y-6">
+        <form method="POST" action="{{ route('register') }}" class="space-y-6" novalidate>
             @csrf
 
             <!-- Nombre -->
