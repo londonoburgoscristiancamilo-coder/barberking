@@ -53,3 +53,10 @@
 .swal2-icon.swal2-success .swal2-success-ring {
     border-color: #D3A180 !important;
 }
+
+.swal2-popup {
+    border-radius: 1rem;
+}
+.swal2-actions {
+    width: 100%;
+}
