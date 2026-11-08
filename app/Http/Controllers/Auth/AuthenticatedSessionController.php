@@ -28,7 +28,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Mensaje de bienvenida después del inicio de sesión
         session()->flash(
             'success',
             '¡Bienvenido al panel de administración de BarberKing!'
@@ -48,6 +47,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Has cerrado sesión correctamente. ¡Hasta pronto!');
     }
 }
