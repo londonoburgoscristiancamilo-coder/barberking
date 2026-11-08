@@ -1,4 +1,4 @@
-@props(['id', 'precio', 'duracion', 'nombre', 'categoria' => 'Servicio de barbería'])
+@props(['id', 'precio', 'duracion_minutos', 'nombre', 'categoria' => 'Servicio de barbería'])
 
 <a href="{{ route('servicios.edit', $id) }}"
     class="block bg-white rounded-2xl border border-border-light/40 px-4 py-6 shadow-sm hover:shadow-md transition-shadow">
@@ -9,16 +9,16 @@
             <span class="text-lg font-bold text-action">${{ number_format($precio, 0, ',', '.') }}</span>
             <div class="flex items-center text-xs text-muted mt-1">
                 <i class="fa-regular fa-clock mr-1"></i>
-                {{ $duracion }} min
+                {{ $duracion_minutos }} min
             </div>
         </div>
-        
+
         <div
             class="border-border-light mx-4 h-10 border-l max-xs:h-0 max-xs:w-full max-xs:border-l-0 max-xs:border-t max-xs:mx-0 max-xs:my-3">
         </div>
 
         <div class="flex-1">
-            <h3 class="font-semibold text-secundary">{{ $nombre }}</h3>
+            <h3 class="font-semibold text-secundary capitalize">{{ $nombre }}</h3>
             <div class="flex items-center text-xs text-muted mt-1">
                 <i class="fa-solid fa-scissors mr-1"></i>
                 {{ $categoria }}

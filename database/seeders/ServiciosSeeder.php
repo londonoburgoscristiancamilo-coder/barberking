@@ -38,7 +38,7 @@ class ServiciosSeeder extends Seeder
             [
                 'nombre' => 'Afeitado clásico',
                 'precio' => 15000,
-                'duracion_minutos' => 20,
+                'duracion_minutos' => 60,
                 'descripcion' => 'Afeitado tradicional al ras con toalla caliente y navaja.'
             ],
         ];

@@ -11,7 +11,7 @@
 
         <div class="space-y-2">
             @foreach ($servicios as $servicio)
-                <x-tarjeta-servicio :id="$servicio->id" :precio="$servicio->precio" :duracion="$servicio->duracion_minutos" :nombre="$servicio->nombre" />
+                <x-tarjeta-servicio :id="$servicio->id" :precio="$servicio->precio" :duracion_minutos="$servicio->duracion_minutos" :nombre="$servicio->nombre" />
             @endforeach ()
         </div>
     </div>
