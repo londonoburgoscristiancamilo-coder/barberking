@@ -57,6 +57,11 @@
 .swal2-popup {
     border-radius: 1rem;
 }
+
 .swal2-actions {
     width: 100%;
+}
+
+.rounded-top-only {
+    border-radius: 12px 12px 0 0 !important;
 }
