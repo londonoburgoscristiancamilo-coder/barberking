@@ -41,7 +41,7 @@
                 Inicio
             </a>
 
-            <a href="#"
+            <a href="{{ route('citas.index') }}"
                class="text-[10px] font-medium tracking-[0.2em] text-secundary hover:text-main active:text-main focus:text-main transition-colors uppercase">
                Citas
             </a>

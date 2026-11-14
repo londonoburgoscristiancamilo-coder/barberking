@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CitasController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiciosController;
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('horarios', HorariosController::class);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::resource('citas', CitasController::class);
+    Route::get('/api/citas/disponibilidad', [CitasController::class, 'obtenerDisponibilidad'])->name('citas.disponibilidad');
 });
 
 require __DIR__.'/auth.php';

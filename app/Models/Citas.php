@@ -15,15 +15,18 @@ class Citas extends Model
     protected $fillable = [
         'nombre_cliente',
         'apellido_cliente',
+        'telefono_cliente',
         'servicio_id',
         'barbero_id',
         'fecha_cita',
+        'hora_cita',
         'notas',
         'estado'
     ];
 
     protected $casts = [
         'fecha_cita' => 'datetime',
+        'hora_cita'=> 'datetime:H:i:s',
     ];
 
     public function servicio()
