@@ -51,6 +51,56 @@ services:
     networks:
       - barberia-network
 
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: barberking_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://schemes-mod-often-anti.trycloudflare.com
+    networks:
+      - barberia-network
+
+  # --- INICIO BLOQUE WHATSAPP ---
+  evolution-api:
+    image: evoapicloud/evolution-api:v1.8.2
+    container_name: barberking_evolution
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_API_KEY=barberking_secret_key_123
+    volumes:
+      - ./evolution_instances:/evolution/instances
+    networks:
+      - barberia-network
+
+  # Tunnel para exponer Evolution al mundo (QR y Webhooks)
+  cloudflared-evo:
+    image: cloudflare/cloudflared:latest
+    container_name: barberking_tunnel_evo
+    restart: unless-stopped
+    command: tunnel --url http://evolution-api:8080
+    networks:
+      - barberia-network
+
+  # Tunnel para exponer n8n al mundo (Para recibir los POST)
+  cloudflared-n8n:
+    image: cloudflare/cloudflared:latest
+    container_name: barberking_tunnel_n8n
+    restart: unless-stopped
+    command: tunnel --url http://n8n:5678
+    networks:
+      - barberia-network
+
 volumes:
   pgdata:
   vendor:
