@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servicios;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreServicioRequest;
 use App\Http\Requests\UpdateServicioRequest;
 
@@ -11,7 +10,8 @@ class ServiciosController extends Controller
 {
     public function index()
     {
-        $servicios = Servicios::orderBy("nombre", 'desc')->get();
+        $servicios = Servicios::orderBy('nombre', 'desc')->get();
+                
         return view('servicios.index', compact('servicios'));
     }
 
@@ -22,17 +22,17 @@ class ServiciosController extends Controller
 
     public function store(StoreServicioRequest $request)
     {
-
-    
-        Servicios::create([
-            'nombre'           => $request->nombre,
-            'duracion_minutos' => $request->duracion_minutos,
-            'precio'           => $request->precio,
-            'descripcion'      => $request->descripcion,
+        $data = $request->safe()->only([
+            'nombre',
+            'duracion_minutos',
+            'precio',
+            'descripcion'
         ]);
 
+        $servicio = Servicios::create($data);
+
         return redirect()->route('servicios.index')
-            ->with('success', 'Servicio creado exitosamente.');
+            ->with('success', "Servicio {$servicio->nombre} creado correctamente.");
     }
 
     public function edit(Servicios $servicio)
@@ -42,23 +42,26 @@ class ServiciosController extends Controller
 
     public function update(UpdateServicioRequest $request, Servicios $servicio)
     {
-
-        $servicio->update([
-            'nombre'           => $request->nombre,
-            'duracion_minutos' => $request->duracion_minutos,
-            'precio'           => $request->precio,
-            'descripcion'      => $request->notas,
+        $data = $request->safe()->only([
+            'nombre',
+            'duracion_minutos',
+            'precio',
+            'descripcion'
         ]);
 
+        $servicio->update($data);
+
         return redirect()->route('servicios.index')
-            ->with('success', 'Servicio actualizado exitosamente.');
+            ->with('success', "Servicio {$servicio->nombre} actualizado correctamente.");
     }
 
     public function destroy(Servicios $servicio)
     {
+        $nombreServicio = $servicio->nombre;
+
         $servicio->delete();
 
         return redirect()->route('servicios.index')
-            ->with('success', 'El servicio ha sido eliminado correctamente.');
+            ->with('success', "Servicio {$nombreServicio} eliminado correctamente.");
     }
 }
