@@ -13,11 +13,13 @@
             @forelse ($citas as $cita)
                 <x-tarjeta-cita 
                     :id="$cita->id"
-                    fecha="{{ \Carbon\Carbon::parse($cita->fecha_cita)->translatedFormat('d M') }}"
-                    hora_inicio="{{ \Carbon\Carbon::parse($cita->hora_cita)->format('H:i') }}"
+                    fecha="{{ $cita->fecha_cita->translatedFormat('d M') }}"
+                    hora_inicio="{{ substr($cita->hora_cita, 0, 5) }}"
                     hora_fin="{{ \Carbon\Carbon::parse($cita->hora_cita)->addMinutes($cita->servicio->duracion_minutos)->format('H:i') }}"
-                    cliente="{{ $cita->nombre_cliente }} {{ $cita->apellido_cliente }}"
-                    servicio="{{ $cita->servicio->nombre }}" :precio="$cita->servicio->precio" barbero="{{ $cita->barbero->name }}"
+                    cliente="{{ $cita->cliente->nombres }} {{ $cita->cliente->apellidos }}"
+                    servicio="{{ $cita->servicio->nombre }}"
+                    :precio="$cita->servicio->precio"
+                    barbero="{{ $cita->barbero->name }}"
                     estado="{{ $cita->estado }}" />
             @empty
                 <div class="bg-white rounded-2xl border border-border-light/40 p-8 text-center text-muted">

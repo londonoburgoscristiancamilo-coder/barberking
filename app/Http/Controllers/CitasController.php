@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Citas;
-use App\Models\Horarios;
+use App\Models\Clientes;
 use App\Models\Servicios;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use App\Services\DisponibilidadCitasService;
 use App\Http\Requests\StoreCitaRequest;
+use App\Http\Requests\UpdateCitaRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CitasController extends Controller
 {
     public function index()
     {
-        $citas = Citas::with(['servicio', 'barbero'])
+        $citas = Citas::with(['cliente', 'servicio', 'barbero'])
             ->orderBy('fecha_cita', 'asc')
             ->orderBy('hora_cita', 'asc')
             ->get();
@@ -25,131 +28,140 @@ class CitasController extends Controller
 
     public function create()
     {
+        $clientes = Clientes::orderBy('nombres')->orderBy('apellidos')->get();
         $servicios = Servicios::all();
         $barberos = User::all();
 
-        return view('citas.create', compact('servicios', 'barberos'));
+        return view('citas.create', compact('clientes', 'servicios', 'barberos'));
     }
 
-
-
-    public function store(StoreCitaRequest $request)
+    public function store(StoreCitaRequest $request, DisponibilidadCitasService $disponibilidad)
     {
-        Citas::create([
-            'nombre_cliente'   => $request->nombre_cliente,
-            'apellido_cliente' => $request->apellido_cliente,
-            'servicio_id'      => $request->servicio_id,
-            'barbero_id'       => $request->barbero_id,
-            'fecha_cita'       => $request->fecha_cita,
-            'hora_cita'        => $request->hora_cita,
-            'notas'            => $request->notas,
-        ]);
+        $datos = $request->validated();
 
-        return redirect()->route('citas.index')->with('success', 'Cita creada exitosamente.');
+        DB::transaction(function () use ($datos, $disponibilidad) {
+            // Bloquear las reservas del barbero durante la operación
+            User::whereKey($datos['barbero_id'])->lockForUpdate()->firstOrFail();
+
+            $horas = $disponibilidad->obtenerHoras(
+                $datos['fecha_cita'],
+                (int) $datos['servicio_id'],
+                (int) $datos['barbero_id']
+            );
+
+            if (!in_array($datos['hora_cita'], $horas, true)) {
+                throw ValidationException::withMessages([
+                    'hora_cita' => 'La hora seleccionada ya no está disponible.'
+                ]);
+            }
+
+            if ($datos['tipo_cliente'] === 'nuevo') {
+                $cliente = Clientes::create([
+                    'documento_identidad' => $datos['documento_identidad'],
+                    'nombres' => $datos['nombres'],
+                    'apellidos' => $datos['apellidos'],
+                    'telefono' => $datos['telefono'] ?? null
+                ]);
+
+                $clienteId = $cliente->id;
+            } else {
+                $clienteId = $datos['cliente_id'];
+            }
+
+            Citas::create([
+                'cliente_id' => $clienteId,
+                'servicio_id' => $datos['servicio_id'],
+                'barbero_id' => $datos['barbero_id'],
+                'fecha_cita' => $datos['fecha_cita'],
+                'hora_cita' => $datos['hora_cita'],
+                'notas' => $datos['notas'] ?? null,
+                'estado' => 'pendiente'
+            ]);
+        });
+
+        return redirect()->route('citas.index')
+            ->with('success', 'Cita creada exitosamente.');
     }
 
     public function edit(string $id)
     {
-        $citas = Citas::findOrFail($id);
+        $citas = Citas::with(['cliente', 'servicio', 'barbero'])->findOrFail($id);
+        $clientes = Clientes::orderBy('nombres')->orderBy('apellidos')->get();
         $servicios = Servicios::all();
         $barberos = User::all();
 
-        return view('citas.edit', compact('citas', 'servicios', 'barberos'));
+        return view('citas.edit', compact('citas', 'clientes', 'servicios', 'barberos'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateCitaRequest $request, string $id, DisponibilidadCitasService $disponibilidad)
     {
+        $datos = $request->validated();
 
-        $cita = Citas::findOrFail($id);
+        DB::transaction(function () use ($id, $datos, $disponibilidad) {
+            User::whereKey($datos['barbero_id'])->lockForUpdate()->firstOrFail();
 
-        $cita->update([
-            'nombre_cliente'   => $request->nombre_cliente,
-            'apellido_cliente' => $request->apellido_cliente,
-            'telefono_cliente' => $request->telefono_cliente,
-            'servicio_id'      => $request->servicio_id,
-            'barbero_id'       => $request->barbero_id,
-            'fecha_cita'       => $request->fecha_cita,
-            'hora_cita'        => $request->hora_cita,
-            'notas'            => $request->notas,
-        ]);
+            $cita = Citas::findOrFail($id);
 
-        return redirect()->route('citas.index')->with('success', 'Cita actualizada exitosamente.');
+            $horas = $disponibilidad->obtenerHoras(
+                $datos['fecha_cita'],
+                (int) $datos['servicio_id'],
+                (int) $datos['barbero_id'],
+                (int) $cita->id
+            );
+
+            $fechaActual = $cita->fecha_cita->format('Y-m-d');
+            $horaActual = substr($cita->hora_cita, 0, 5);
+
+            $sinCambiosDeHorario =
+                $fechaActual === $datos['fecha_cita'] &&
+                $horaActual === $datos['hora_cita'] &&
+                (int) $cita->servicio_id === (int) $datos['servicio_id'] &&
+                (int) $cita->barbero_id === (int) $datos['barbero_id'];
+
+            if (!$sinCambiosDeHorario && !in_array($datos['hora_cita'], $horas, true)) {
+                throw ValidationException::withMessages([
+                    'hora_cita' => 'La hora seleccionada no está disponible.'
+                ]);
+            }
+
+            $cita->update([
+                'cliente_id' => $datos['cliente_id'],
+                'servicio_id' => $datos['servicio_id'],
+                'barbero_id' => $datos['barbero_id'],
+                'fecha_cita' => $datos['fecha_cita'],
+                'hora_cita' => $datos['hora_cita'],
+                'notas' => $datos['notas'] ?? null
+            ]);
+        });
+
+        return redirect()->route('citas.index')
+            ->with('success', 'Cita actualizada exitosamente.');
     }
 
-    public function destroy(Citas $cita) {
+    public function destroy(Citas $cita)
+    {
         $cita->delete();
 
         return redirect()->route('citas.index')
-            ->with('success', 'La cita ha sido eliminado correctamente.');
+            ->with('success', 'La cita ha sido eliminada correctamente.');
     }
 
-    public function obtenerDisponibilidad(Request $request)
+    public function obtenerDisponibilidad(Request $request, DisponibilidadCitasService $disponibilidad)
     {
-        if (!$request->fecha_cita || !$request->barbero_id || !$request->servicio_id) {
-            return response()->json([]);
-        }
+        $datos = $request->validate([
+            'fecha_cita' => 'required|date_format:Y-m-d',
+            'servicio_id' => 'required|integer|exists:servicios,id',
+            'barbero_id' => 'required|integer|exists:users,id',
+            'excluir_cita_id' => 'nullable|integer|exists:citas,id'
+        ]);
 
-        $fecha = Carbon::parse($request->fecha_cita)->format('Y-m-d');
-        $servicio = Servicios::findOrFail($request->servicio_id);
-        $duracion = $servicio->duracion_minutos;
+        $horas = $disponibilidad->obtenerHoras(
+            $datos['fecha_cita'],
+            (int) $datos['servicio_id'],
+            (int) $datos['barbero_id'],
+            isset($datos['excluir_cita_id']) ? (int) $datos['excluir_cita_id'] : null
+        );
 
-        $horario = Horarios::where('barbero_id', $request->barbero_id)
-            ->whereDate('fecha', $fecha)
-            ->first();
-
-        if (!$horario) {
-            return response()->json([]);
-        }
-
-        $citas = Citas::where('barbero_id', $request->barbero_id)
-            ->whereDate('fecha_cita', $fecha)
-            ->where('estado', '!=', 'C')
-            ->get();
-
-        $citasOcupadas = [];
-        foreach ($citas as $cita) {
-            $inicio = Carbon::parse($cita->fecha_cita);
-            $servicioCita = Servicios::find($cita->servicio_id);
-            $fin = $inicio->copy()->addMinutes($servicioCita->duracion_minutos);
-
-            $citasOcupadas[] = ['inicio' => $inicio, 'fin' => $fin];
-        }
-
-        $inicioTurno = Carbon::parse($fecha . ' ' . $horario->hora_inicio);
-        $finTurno = Carbon::parse($fecha . ' ' . $horario->hora_fin);
-
-        $inicioDescanso = $horario->hora_inicio_descanso ? Carbon::parse($fecha . ' ' . $horario->hora_inicio_descanso) : null;
-        $finDescanso = $horario->hora_fin_descanso ? Carbon::parse($fecha . ' ' . $horario->hora_fin_descanso) : null;
-
-        $horasDisponibles = [];
-        $actual = $inicioTurno->copy();
-
-        while ($actual->copy()->addMinutes($duracion)->lte($finTurno)) {
-            $finEstimado = $actual->copy()->addMinutes($duracion);
-            $solapa = false;
-
-            if ($inicioDescanso && $finDescanso) {
-                if ($actual->lt($finDescanso) && $finEstimado->gt($inicioDescanso)) {
-                    $solapa = true;
-                }
-            }
-
-            if (!$solapa) {
-                foreach ($citasOcupadas as $ocupada) {
-                    if ($actual->lt($ocupada['fin']) && $finEstimado->gt($ocupada['inicio'])) {
-                        $solapa = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!$solapa) {
-                $horasDisponibles[] = $actual->format('H:i');
-            }
-
-            $actual->addMinutes(30);
-        }
-
-        return response()->json($horasDisponibles);
+        return response()->json($horas);
     }
 }
