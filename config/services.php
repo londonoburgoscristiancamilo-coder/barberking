@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'barberking_bot' => [
+        'key' => env('BARBERKING_BOT_API_KEY'),
+    ],
+
 ];
