@@ -14,11 +14,13 @@
                     <h2 class='text-2xl font-semibold text-main-green mb-2'>{{ $title }}</h2>
                     <p class='text-sm text-muted mb-6'>{{ $message }}</p>
 
-                    <div class='rounded-xl bg-[#F5F2EB] p-4'>
+                    <div class='rounded-xl bg-modal-surface p-4'>
                         <p class='font-semibold text-main-green'>{{ $itemTitle }}</p>
+
                         @if($itemSubtitle)
                             <p class='text-sm text-muted mt-1'>{{ $itemSubtitle }}</p>
                         @endif
+
                         @if($itemDate)
                             <p class='text-sm text-muted mt-2 flex items-center'>
                                 <i class='fa-regular fa-calendar mr-2'></i>

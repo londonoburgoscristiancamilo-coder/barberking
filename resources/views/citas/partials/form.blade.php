@@ -4,12 +4,12 @@
 
 <!-- Cliente -->
 <div>
-    <h3 class="text-lg font-medium text-gray-900 mb-3">Cliente</h3>
+    <h3 class="text-lg font-medium text-main-green mb-3">Cliente</h3>
 
     @if (!$esEdicion)
         <div class="mb-4">
-            <x-input-label for="tipo_cliente" :value="__('Tipo de cliente')" class="text-sm font-semibold"
-                colorTexto="text-gray-700" />
+            <x-input-label for="tipo_cliente" :value="__('Tipo de cliente')"
+                class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
             <select id="tipo_cliente" name="tipo_cliente" x-model="tipo_cliente"
                 class="block w-full py-3.5 px-4 mt-2 appearance-none bg-white rounded-xl border border-border-light focus:outline-none focus:border-main/70">
@@ -18,13 +18,13 @@
             </select>
 
             <x-input-error :messages="$errors->get('tipo_cliente')" class="mt-1" />
-        </div
+        </div>
     @endif
 
     <!-- Seleccionar cliente registrado -->
     <div x-show="tipo_cliente === 'existente'">
-        <x-input-label for="cliente_id" :value="__('Cliente registrado')" class="text-sm font-semibold"
-            colorTexto="text-gray-700" />
+        <x-input-label for="cliente_id" :value="__('Cliente registrado')"
+            class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
         <div class="relative flex items-center mt-2">
             <span class="absolute left-4 pointer-events-none flex items-center text-muted/70">
@@ -51,7 +51,7 @@
         <x-input-error :messages="$errors->get('cliente_id')" class="mt-1" />
 
         @if ($esEdicion)
-            <p class="text-xs text-gray-500 mt-2">
+            <p class="text-xs text-muted mt-2">
                 Cambiar el cliente asociará esta cita a otra persona registrada.
             </p>
         @endif
@@ -63,7 +63,7 @@
             <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
                 <div>
                     <x-input-label for="documento_identidad" :value="__('Cédula de ciudadanía')"
-                        class="text-sm font-semibold" colorTexto="text-gray-700" />
+                        class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
                     <x-text-input id="documento_identidad" class="block w-full py-3 px-4 mt-2"
                         type="text" inputmode="numeric" name="documento_identidad"
@@ -74,8 +74,7 @@
                 </div>
 
                 <div>
-                    <x-input-label for="telefono" :value="__('Teléfono')" class="text-sm font-semibold"
-                        colorTexto="text-gray-700" />
+                    <x-input-label for="telefono" :value="__('Teléfono')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
                     <div class="relative flex items-center mt-2">
                         <span class="absolute left-4 pointer-events-none flex items-center text-muted/70">
@@ -91,8 +90,7 @@
                 </div>
 
                 <div>
-                    <x-input-label for="nombres" :value="__('Nombres')" class="text-sm font-semibold"
-                        colorTexto="text-gray-700" />
+                    <x-input-label for="nombres" :value="__('Nombres')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
                     <x-text-input id="nombres" class="block w-full py-3 px-4 mt-2"
                         type="text" name="nombres" value="{{ old('nombres') }}"
@@ -102,8 +100,7 @@
                 </div>
 
                 <div>
-                    <x-input-label for="apellidos" :value="__('Apellidos')" class="text-sm font-semibold"
-                        colorTexto="text-gray-700" />
+                    <x-input-label for="apellidos" :value="__('Apellidos')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
                     <x-text-input id="apellidos" class="block w-full py-3 px-4 mt-2"
                         type="text" name="apellidos" value="{{ old('apellidos') }}"
@@ -113,7 +110,7 @@
                 </div>
             </div>
 
-            <p class="text-xs text-gray-500 mt-3">
+            <p class="text-xs text-muted mt-3">
                 El cliente quedará registrado y podrá utilizar sus datos para futuras citas.
             </p>
         </div>
@@ -122,8 +119,7 @@
 
 <!-- Servicio -->
 <div>
-    <x-input-label for="servicio_id" :value="__('Servicio')" class="text-sm font-semibold"
-        colorTexto="text-gray-700" />
+    <x-input-label for="servicio_id" :value="__('Servicio')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
     <div class="relative flex items-center mt-2">
         <span class="absolute left-5 pointer-events-none flex items-center text-muted/70">
@@ -153,8 +149,7 @@
 <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
     <!-- Barbero -->
     <div>
-        <x-input-label for="barbero_id" :value="__('Barbero')" class="text-sm font-semibold"
-            colorTexto="text-gray-700" />
+        <x-input-label for="barbero_id" :value="__('Barbero')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
         <div class="relative flex items-center mt-2">
             <span class="absolute left-4 pointer-events-none flex items-center text-muted/70">
@@ -180,17 +175,18 @@
 
     <!-- Fecha -->
     <div>
-        <x-input-label for="fecha_cita" :value="__('Fecha')" class="text-sm font-semibold"
-            colorTexto="text-gray-700" />
+        <x-input-label for="fecha_cita" :value="__('Fecha')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
         <div class="relative flex items-center mt-2">
             <span class="absolute left-4 pointer-events-none flex items-center text-muted/70">
                 <i class="fa-regular fa-calendar"></i>
             </span>
 
-            <x-text-input id="fecha_cita" name="fecha_cita" x-model="fecha_cita"
-                @change="fetchHoras()" class="block w-full py-3.5 pl-10 pr-3 bg-white"
-                type="date" min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
+            <x-text-input id="fecha_cita" name="fecha_cita"
+                x-model="fecha_cita" @change="fetchHoras()"
+                class="block w-full py-3.5 pl-10 pr-3 bg-white"
+                type="date"
+                min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" />
         </div>
 
         <x-input-error :messages="$errors->get('fecha_cita')" class="mt-1" />
@@ -199,8 +195,7 @@
 
 <!-- Hora -->
 <div>
-    <x-input-label for="hora_cita" :value="__('Hora disponible')" class="text-sm font-semibold"
-        colorTexto="text-gray-700" />
+    <x-input-label for="hora_cita" :value="__('Hora disponible')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
     <div class="relative flex items-center mt-2">
         <span class="absolute left-5 pointer-events-none flex items-center text-muted/70">
@@ -209,7 +204,7 @@
 
         <select id="hora_cita" name="hora_cita" x-model="hora_cita"
             x-bind:disabled="cargando || !fecha_cita || !barbero_id || !servicio_id"
-            class="block w-full py-3.5 pl-14 pr-4 appearance-none bg-white rounded-xl border border-border-light focus:outline-none focus:border-main/70 transition-colors disabled:bg-gray-50">
+            class="block w-full py-3.5 pl-14 pr-4 appearance-none bg-white rounded-xl border border-border-light focus:outline-none focus:border-main/70 transition-colors disabled:bg-input-disabled">
 
             <option value="" x-text="cargando ? 'Buscando espacios...' :
                 (fecha_cita && barbero_id && servicio_id ?
@@ -227,22 +222,19 @@
         </span>
     </div>
 
-    <p class="text-xs text-gray-500 mt-2 font-medium" x-show="servicio_id"
-        x-text="textoResumenTime"></p>
+    <p class="text-xs text-muted mt-2 font-medium" x-show="servicio_id" x-text="textoResumenTime"></p>
 
     <x-input-error :messages="$errors->get('hora_cita')" class="mt-1" />
 
-    <p x-show="errorDisponibilidad" x-text="errorDisponibilidad"
-        class="text-sm text-red-600 mt-1" x-cloak></p>
+    <p x-show="errorDisponibilidad" x-text="errorDisponibilidad" class="text-sm text-error mt-1" x-cloak></p>
 </div>
 
 <!-- Notas -->
 <div>
     <div class="flex justify-between items-center mb-2">
-        <x-input-label for="notas" :value="__('Notas para la cita')"
-            class="text-sm font-semibold" colorTexto="text-gray-700" />
+        <x-input-label for="notas" :value="__('Notas para la cita')" class="text-sm font-semibold" colorTexto="text-main-green/80" />
 
-        <span class="text-xs text-gray-400">Opcional</span>
+        <span class="text-xs text-muted-light">Opcional</span>
     </div>
 
     <x-textarea id="notas" name="notas" rows="3"
@@ -256,21 +248,21 @@
 
     <!-- Separador -->
     <div class="flex justify-center py-2">
-        <div class="w-20 h-[3px] bg-[#A97351]/40"></div>
+        <div class="w-20 h-[3px] bg-auth-divider/40"></div>
     </div>
 
     <!-- Resumen del servicio -->
     <div class="flex justify-between items-center" x-show="servicio_id" x-cloak>
-        <span class="text-sm text-gray-500"
+        <span class="text-sm text-muted"
             x-text="`Total · ${servicioSeleccionado?.duracion_minutos || 0} min`"></span>
 
-        <span class="text-2xl font-bold text-gray-900"
+        <span class="text-2xl font-bold text-main-green"
             x-text="precioFormateado"></span>
     </div>
 
     <!-- Botón principal -->
     <x-action-button type="submit"
-        class="w-full justify-center bg-[#A04E35] hover:bg-[#8B422B] py-4 text-base rounded-xl">
+        class="w-full justify-center bg-action-primary hover:bg-action-primary-hover py-4 text-base rounded-xl">
         @if ($esEdicion)
             <i class="fa-solid fa-pen mr-2"></i>
             Actualizar cita
@@ -283,7 +275,7 @@
     <!-- Cancelar -->
     <div class="text-center">
         <a href="{{ route('citas.index') }}"
-            class="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
+            class="text-sm font-medium text-muted hover:text-main-green transition-colors">
             Cancelar
         </a>
     </div>

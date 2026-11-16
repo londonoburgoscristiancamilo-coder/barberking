@@ -138,12 +138,11 @@
     <x-input-error :messages="$errors->get('descripcion')" class="mt-1" />
 </div>
 
-
 <!-- Acciones del formulario -->
 @if ($esEdicion)
     <!-- Separador -->
     <div class="py-5">
-        <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto"></div>
+        <div class="w-20 h-[3px] bg-auth-divider/40 mx-auto"></div>
     </div>
 
     <div class="py-2">
@@ -168,7 +167,7 @@
 @else
     <!-- Separador -->
     <div class="py-5">
-        <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto"></div>
+        <div class="w-20 h-[3px] bg-auth-divider/40 mx-auto"></div>
     </div>
 
     <x-action-button type="submit">

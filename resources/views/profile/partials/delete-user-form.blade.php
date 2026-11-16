@@ -1,11 +1,10 @@
-
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-main-green">
             {{ __('Eliminar Cuenta') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-muted">
             {{ __('Una vez que se elimine tu cuenta, todos sus recursos y datos se borrarán de forma permanente. Antes de continuar, asegúrate de descargar cualquier información que desees conservar.') }}
         </p>
     </header>
@@ -28,7 +27,7 @@
         <button
             type="button"
             id="delete-account-button"
-            class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 py-2 bg-error border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-error-hover focus:bg-error-hover active:bg-error-active focus:outline-none focus:ring-2 focus:ring-error-hover focus:ring-offset-2 transition ease-in-out duration-150"
         >
             Eliminar cuenta
         </button>
@@ -41,7 +40,7 @@
         const form = document.getElementById('delete-account-form');
         const passwordInput = document.getElementById('delete-account-password');
 
-        if (!button || !form || !window.Swal) return;
+        if (!button || !form || !passwordInput || !window.Swal) return;
 
         const deletionError = @json($errors->userDeletion->first('password'));
 
@@ -64,8 +63,8 @@
                 showCancelButton: true,
                 confirmButtonText: 'Sí, eliminar cuenta',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
+                confirmButtonColor: 'var(--color-error)',
+                cancelButtonColor: 'var(--color-action-cancel)',
                 reverseButtons: true,
                 focusCancel: true,
                 inputValidator: (value) => {

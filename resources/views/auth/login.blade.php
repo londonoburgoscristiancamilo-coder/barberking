@@ -8,44 +8,61 @@
 
             <!-- Correo -->
             <div class="space-y-2">
-                <x-input-label for="email" :value="__('Correo')" class="text-sm font-medium text-gray-700" />
+                <x-input-label for="email" :value="__('Correo')" class="text-sm font-medium text-secundary" />
+                          
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
+                    <span class="absolute left-5 pointer-events-none flex items-center text-auth-icon opacity-70">
                         <i class="fa-regular fa-envelope text-xl"></i>
                     </span>
-                    <x-email-input id="email" class="block w-full py-3.5 pl-14 pr-4" type="email" name="email" :value="old('email')" placeholder="correo@dominio.com" required autocomplete="username" />
+
+                    <x-email-input
+                        id="email"
+                        class="block w-full py-3.5 pl-14 pr-4"
+                        type="email"
+                        name="email"
+                        :value="old('email')"
+                        placeholder="correo@dominio.com"
+                        required
+                        autocomplete="username"
+                    />
                 </div>
+
                 <x-input-error :messages="$errors->get('email')" class="mt-1" />
             </div>
 
             <!-- Contraseña -->
             <div class="space-y-2">
-                <x-input-label for="password" :value="__('Contraseña')" class="text-sm font-medium text-gray-700" />
+                <x-input-label for="password" :value="__('Contraseña')" class="text-sm font-medium text-secundary" />
+
                 <div class="relative flex items-center mt-2">
-                    <span class="absolute left-5 pointer-events-none flex items-center" style="color: #4D4C4B; opacity: 70%;">
+                    <span class="absolute left-5 pointer-events-none flex items-center text-auth-icon opacity-70">
                         <i class="fa-solid fa-lock text-xl"></i>
                     </span>
-                    <x-password-input id="password" class="block w-full py-3.5 pl-14 pr-4" type="password" name="password" placeholder="********" required autocomplete="current-password" />
+
+                    <x-password-input
+                        id="password"
+                        class="block w-full py-3.5 pl-14 pr-4"
+                        type="password"
+                        name="password"
+                        placeholder="********"
+                        required
+                        autocomplete="current-password"
+                    />
                 </div>
+
                 <x-input-error :messages="$errors->get('password')" class="mt-1" />
+
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="underline text-sm rounded-md" style="color: #9B694C; opacity: 0.7;">
+                    <a href="{{ route('password.request') }}"
+                       class="underline text-sm rounded-md text-auth-link opacity-70">
                         {{ __('¿Olvidaste tu contraseña?') }}
                     </a>
                 @endif
             </div>
 
-            <!-- Remember Me 
-            <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Recuérdame') }}</span>
-                </label>
-            </div> -->
-
             <!-- Separador -->
             <div class="mt-8 mb-8">
-                <div class="w-20 h-[3px] bg-[#A97351]/40 mx-auto"></div>
+                <div class="w-20 h-[3px] bg-auth-divider/40 mx-auto"></div>
             </div>
 
             <!-- Botón y Enlace -->
@@ -54,7 +71,8 @@
                     {{ __('Iniciar Sesión') }}
                 </x-primary-button>
 
-                <a href="{{ route('register') }}" class="text-sm underline mt-2" style="color: #9B694C; opacity: 0.7;">
+                <a href="{{ route('register') }}"
+                   class="text-sm underline mt-2 text-auth-link opacity-70">
                     {{ __('¿No tienes una cuenta creada?') }}
                 </a>
             </div>

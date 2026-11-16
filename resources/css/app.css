@@ -53,6 +53,59 @@
     --color-action: #A74F32;
     --color-border-light: #E3DED4;
     --color-divider: #444B43;
+
+    /* Colores de bienvenida y autenticación */
+    --color-auth-background: #F3EFE4;
+    --color-auth-text: #5C4033;
+    --color-auth-accent: #B87333;
+    --color-auth-divider: #A97351;
+    --color-auth-heading: #A66F4F;
+    --color-auth-description: #201917;
+    --color-auth-icon: #4D4C4B;
+    --color-auth-link: #9B694C;
+
+    /* Botones de autenticación */
+    --color-auth-primary: #B46846;
+    --color-auth-primary-hover: #A0622A;
+    --color-auth-secondary: #F1EFE2;
+
+    /* Colores adicionales del dashboard */
+    --color-dashboard-muted: #9CA3AF;
+    --color-dashboard-border: #1F2937;
+
+    /* Acciones secundarias */
+    --color-action-cancel: #6B7280;
+
+    /* Colores adicionales para formularios y acciones */
+    --color-action-primary: #A04E35;
+    --color-action-primary-hover: #8B422B;
+    --color-input-disabled: #F9FAFB;
+
+    /* Superficies de componentes */
+    --color-modal-surface: #F5F2EB;
+    --color-card-surface: #FFFCF8;
+    --color-navigation-surface: #F4F1EA;
+
+    /* Estados de citas */
+    --color-status-confirmed-bg: #EEF3E9;
+    --color-status-confirmed-text: #446A46;
+    --color-status-pending-bg: #FFF3E0;
+    --color-status-pending-text: #E65100;
+    --color-status-cancelled-bg: #F5EBE6;
+    --color-status-completed-bg: #F3F4F6;
+    --color-status-completed-text: #374151;
+
+    /* Textos secundarios de tarjetas */
+    --color-card-muted: #6B7280;
+    --color-card-subtle: #9CA3AF;
+
+    /* Estados */
+    --color-success: #16A34A;
+    --color-error: #DC2626;
+
+    /* Estados de eliminación */
+    --color-error-hover: #EF4444;
+    --color-error-active: #B91C1C;
 }
 
 /*
