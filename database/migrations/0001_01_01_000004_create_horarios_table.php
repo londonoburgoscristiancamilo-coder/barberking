@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('fecha');
             $table->time('hora_inicio');
             $table->time('hora_fin');
-            $table->time('hora_inicio_descanso');
-            $table->time('hora_fin_descanso');
+            $table->time('hora_inicio_descanso')->nullable();
+            $table->time('hora_fin_descanso')->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ class Horarios extends Model
 
     public function barbero()
     {
-        return $this->belongsTo(User::class, 'barbero_id');
+        return $this->belongsTo(User::class, 'barbero_id')
+            ->withTrashed();
     }
 }
