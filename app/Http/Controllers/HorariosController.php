@@ -11,20 +11,25 @@ use App\Http\Requests\UpdateHorarioRequest;
 class HorariosController extends Controller
 {
     public function index()
-    {
+    {   
         // Establecer Carbon en español
         Carbon::setLocale('es');
 
-        // Definir la semana actual (Lunes a Domingo) o usar fechas dinámicas
-        $inicioSemana = Carbon::now()->startOfWeek();  // Lunes
-        $finSemana = Carbon::now()->endOfWeek();       // Domingo
+        // Obtener la semana actual de lunes a domingo
+        $hoy = Carbon::today();
 
-        // Formatear el subtítulo dinámico (ej: "Turnos de trabajo · 2 - 8 de noviembre de 2026")
+        $inicioSemana = $hoy->copy()->startOfWeek();
+        $finSemana = $hoy->copy()->endOfWeek();
+
+        // Construir el subtítulo dinámico
         $subtitulo = "Turnos de trabajo · " . $inicioSemana->format('j') . " - " . $finSemana->translatedFormat('j \d\e F \d\e Y');
 
-        // Filtrar los horarios que correspondan a las fechas de esta semana
+        // Consultar los horarios de la semana actual
         $horarios = Horarios::with('barbero')
-            ->whereBetween('fecha', [$inicioSemana->toDateString(), $finSemana->toDateString()])
+            ->whereBetween('fecha', [
+                $inicioSemana->toDateString(),
+                $finSemana->toDateString()
+            ])
             ->orderBy('fecha', 'asc')
             ->get();
 
@@ -42,18 +47,15 @@ class HorariosController extends Controller
     {
         $data = $request->validated();
 
-        // Si no existe descanso, guardamos valores predeterminados
-        $data['hora_inicio_descanso'] = $request->filled('hora_inicio_descanso') ? $request->hora_inicio_descanso : '00:00:00';
-        $data['hora_fin_descanso'] = $request->filled('hora_fin_descanso') ? $request->hora_fin_descanso : '00:00:00';
+        $data['hora_inicio_descanso'] = $request->input('hora_inicio_descanso') ?: null;
+        $data['hora_fin_descanso'] = $request->input('hora_fin_descanso') ?: null;
 
-        Horarios::create($data);
+        $horario = Horarios::create($data);
 
-        return redirect()->route('horarios.index')->with('success', 'Horario creado exitosamente.');
-    }
+        $nombreBarbero = $horario->barbero->name;
 
-    public function show(string $id)
-    {
-
+        return redirect()->route('horarios.index')
+            ->with('success', "Horario de {$nombreBarbero} creado correctamente.");
     }
 
     public function edit(Horarios $horario)
@@ -67,19 +69,24 @@ class HorariosController extends Controller
     {
         $data = $request->validated();
 
-        // Si no existe descanso, guardamos valores predeterminados
-        $data['hora_inicio_descanso'] = $request->filled('hora_inicio_descanso') ? $request->hora_inicio_descanso : '00:00:00';
-        $data['hora_fin_descanso'] = $request->filled('hora_fin_descanso') ? $request->hora_fin_descanso : '00:00:00';
+        $data['hora_inicio_descanso'] = $request->input('hora_inicio_descanso') ?: null;
+        $data['hora_fin_descanso'] = $request->input('hora_fin_descanso') ?: null;
 
         $horario->update($data);
 
-        return redirect()->route('horarios.index')->with('success', 'Horario actualizado exitosamente.');
+        $nombreBarbero = $horario->barbero->name;
+
+        return redirect()->route('horarios.index')
+            ->with('success', "Horario de {$nombreBarbero} actualizado correctamente.");
     }
 
     public function destroy(Horarios $horario)
     {
+        $nombreBarbero = $horario->barbero->name;
+
         $horario->delete();
 
-        return redirect()->route('horarios.index')->with('success', 'El horario ha sido eliminado correctamente.');
+        return redirect()->route('horarios.index')
+            ->with('success', "Horario de {$nombreBarbero} eliminado correctamente.");
     }
 }
