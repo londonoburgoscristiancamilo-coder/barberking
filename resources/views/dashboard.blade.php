@@ -70,24 +70,4 @@
             <p class="text-sm">Espacio reservado para el módulo de agenda.</p>
         </div>
     </div>
-
-    <!-- Script de Alerta de inicio de sesión -->
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                window.Swal.fire({
-                    icon: 'success',
-                    title: 'Iniciaste Sesión Correctamente',
-                    text: @json(session('success')),
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonColor: '#B46846',
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'rounded-top-only'
-                    }
-                });
-            });
-        </script>
-    @endif
 </x-app-layout>

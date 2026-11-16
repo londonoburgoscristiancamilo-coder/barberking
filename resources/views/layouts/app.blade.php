@@ -40,5 +40,8 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Toast de confirmación -->
+        <x-flash-toast />
     </body>
 </html>

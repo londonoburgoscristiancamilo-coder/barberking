@@ -1,4 +1,11 @@
+
 @import "tailwindcss" source(none);
+
+/*
+    =========================================
+            FUENTES Y ARCHIVOS DE ORIGEN
+    =========================================
+*/
 
 /* Vistas Blade */
 @source "../views/**/*.blade.php";
@@ -6,7 +13,7 @@
 /* Código PHP de la aplicación */
 @source "../../app/**/*.php";
 
-/* Códgio JS de la app */
+/* Código JavaScript de la aplicación */
 @source "../js/**/*.js";
 
 @font-face {
@@ -23,11 +30,18 @@
     font-style: italic;
 }
 
+/*
+    =========================================
+            VARIABLES GLOBALES - TAILWIND
+    =========================================
+*/
+
 @theme {
-     --breakpoint-xs: 400px;
+    --breakpoint-xs: 400px;
 
     --font-sans: 'InterCustom', ui-sans-serif, system-ui, sans-serif;
 
+    /* Colores principales de BarberKing */
     --color-main: #D9A382;
     --color-secundary: #252C27;
     --color-base: #F5F1E9;
@@ -38,22 +52,54 @@
     --color-muted-light: #B5BCAF;
     --color-action: #A74F32;
     --color-border-light: #E3DED4;
+    --color-divider: #444B43;
 }
 
-/* Color del Checkmark de SweetAlert2 */
+/*
+    =========================================
+          VARIABLES GLOBALES - COMPONENTES
+    =========================================
+*/
+
+:root {
+    /* Colores complementarios */
+    --bk-color-accent: #D3A180;
+    --bk-color-accent-dark: #A04E35;
+    --bk-color-text-select: #343A33;
+    --bk-color-white-pure: #FFFFFF;
+    --bk-color-border-select: #E3D8CA;
+    --bk-color-hover: #F5E7DB;
+    --bk-color-hover-strong: #EED9C9;
+    --bk-color-focus: #F2E3D6;
+
+    /* Efectos y sombras */
+    --bk-shadow-select: 0 12px 30px rgba(0, 0, 0, 0.12);
+    --bk-shadow-calendar: 0 16px 40px rgba(37, 44, 39, 0.15);
+    --bk-shadow-time: 0 12px 30px rgba(37, 44, 39, 0.15);
+    --bk-shadow-focus: 0 0 0 3px rgba(217, 163, 130, 0.15);
+}
+
+/*
+    =========================================
+                SWEETALERT2
+    =========================================
+*/
+
+/* Color del Checkmark de éxito */
 .swal2-icon.swal2-success {
-    border-color: #D3A180 !important;
-    color: #D3A180 !important;
+    border-color: var(--bk-color-accent) !important;
+    color: var(--bk-color-accent) !important;
 }
 
 .swal2-icon.swal2-success [class^='swal2-success-line'] {
-    background-color: #D3A180 !important;
+    background-color: var(--bk-color-accent) !important;
 }
 
 .swal2-icon.swal2-success .swal2-success-ring {
-    border-color: #D3A180 !important;
+    border-color: var(--bk-color-accent) !important;
 }
 
+/* Contenedor y acciones */
 .swal2-popup {
     border-radius: 1rem;
 }
@@ -64,4 +110,458 @@
 
 .rounded-top-only {
     border-radius: 12px 12px 0 0 !important;
+}
+
+/*
+    =========================================
+            SELECTS PERSONALIZADOS
+    =========================================
+*/
+
+@supports (appearance: base-select) {
+    /* Habilitar personalización */
+    select:not([multiple]):not([size]),
+    select:not([multiple]):not([size])::picker(select) {
+        appearance: base-select;
+    }
+
+    /* Menú desplegable */
+    select:not([multiple]):not([size])::picker(select) {
+        background: var(--bk-color-white-pure);
+        border: 1px solid var(--bk-color-border-select);
+        border-radius: 12px;
+        padding: 6px;
+        box-shadow: var(--bk-shadow-select);
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    /* Opciones */
+    select:not([multiple]):not([size]) option {
+        padding: 12px 14px;
+        border-radius: 8px;
+        color: var(--bk-color-text-select);
+        background: var(--bk-color-white-pure);
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    /* Opciones al pasar el mouse */
+    select:not([multiple]):not([size]) option:hover,
+    select:not([multiple]):not([size]) option:focus {
+        background: var(--bk-color-hover);
+        color: var(--color-main-green);
+    }
+
+    /* Opción seleccionada */
+    select:not([multiple]):not([size]) option:checked {
+        background: var(--bk-color-accent);
+        color: var(--color-main-green);
+        font-weight: 600;
+    }
+
+    /* Ocultar la flecha nativa */
+    select::picker-icon {
+        display: none;
+    }
+}
+
+/*
+    =========================================
+            FLATPICKR - INPUTS GLOBALES
+    =========================================
+*/
+
+/* Campos de fecha y hora */
+.barberking-picker,
+input.flatpickr-input:not([type="hidden"]) {
+    font-family: var(--font-sans);
+    background-color: var(--color-white);
+    color: var(--color-main-green);
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Campos enfocados */
+.barberking-picker:focus,
+input.flatpickr-input:focus {
+    outline: none;
+    border-color: var(--color-main);
+    box-shadow: var(--bk-shadow-focus);
+}
+
+/* Placeholders */
+.barberking-picker::placeholder {
+    color: var(--color-muted) !important;
+    opacity: 0.8;
+    font-family: var(--font-sans);
+    font-weight: 400;
+}
+
+.barberking-picker:placeholder-shown {
+    color: var(--color-muted);
+}
+
+.barberking-picker:not(:placeholder-shown) {
+    color: var(--color-main-green);
+}
+
+/*
+    =========================================
+            FLATPICKR - CALENDARIO
+    =========================================
+*/
+
+/* Contenedor principal */
+.flatpickr-calendar {
+    font-family: var(--font-sans) !important;
+    background: var(--color-white) !important;
+    border: 1px solid var(--color-border-light) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--bk-shadow-calendar) !important;
+    overflow: hidden;
+    padding: 8px;
+    width: 307px;
+    max-width: calc(100vw - 24px);
+}
+
+/* Ocultar flechas decorativas del contenedor */
+.flatpickr-calendar::before,
+.flatpickr-calendar::after {
+    display: none !important;
+}
+
+/* Cabecera */
+.flatpickr-months {
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: var(--color-white) !important;
+    color: var(--color-main-green) !important;
+    fill: var(--color-main-green) !important;
+    height: 40px;
+}
+
+/* Mes y año */
+.flatpickr-current-month {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: var(--bk-color-accent) !important;
+    padding-top: 6px !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: transparent !important;
+    color: var(--bk-color-accent) !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-current-month input.cur-year {
+    color: var(--bk-color-accent) !important;
+    font-weight: 700 !important;
+}
+
+/* Flechas de navegación */
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    top: 8px;
+    padding: 8px;
+    fill: var(--color-action) !important;
+    color: var(--color-action) !important;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: var(--color-main) !important;
+}
+
+/* Días de la semana */
+.flatpickr-weekdays {
+    background: var(--color-white) !important;
+}
+
+span.flatpickr-weekday {
+    background: var(--color-white) !important;
+    color: var(--color-muted) !important;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Días del calendario */
+.flatpickr-day {
+    color: var(--color-main-green);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+/* Días al pasar el mouse */
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+    background: var(--bk-color-hover) !important;
+    border-color: var(--bk-color-hover) !important;
+    color: var(--color-action) !important;
+}
+
+/* Día actual */
+.flatpickr-day.today {
+    border-color: var(--color-main) !important;
+    color: var(--color-action) !important;
+    font-weight: 700;
+}
+
+.flatpickr-day.today:hover {
+    background: var(--bk-color-hover) !important;
+}
+
+/* Día seleccionado */
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover,
+.flatpickr-day.selected:focus,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: var(--bk-color-accent) !important;
+    border-color: var(--bk-color-accent) !important;
+    color: var(--color-main-green) !important;
+    font-weight: 600;
+}
+
+/* Días deshabilitados */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    color: var(--color-muted-light) !important;
+    background: transparent !important;
+    cursor: not-allowed;
+}
+
+/*
+    =========================================
+            FLATPICKR - SELECTOR DE HORAS
+    =========================================
+*/
+
+/* Contenedor general del reloj */
+.flatpickr-time {
+    background: var(--color-white) !important;
+    border-top: none !important;
+    border-radius: 12px;
+    padding: 8px 6px;
+    max-height: 70px !important;
+}
+
+/* Contenedores de números */
+.flatpickr-time .numInputWrapper {
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.flatpickr-time .numInputWrapper:hover {
+    background: var(--color-base) !important;
+}
+
+/* Inputs de horas y minutos */
+.flatpickr-time input {
+    color: var(--color-main-green) !important;
+    font-family: var(--font-sans);
+    font-size: 18px !important;
+    font-weight: 600;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Separador de horas y minutos */
+.flatpickr-time .flatpickr-time-separator {
+    color: var(--bk-color-accent) !important;
+    font-weight: 700;
+}
+
+/* Selector a. m. / p. m. */
+.flatpickr-time .flatpickr-am-pm {
+    color: var(--color-main-green) !important;
+    font-family: var(--font-sans);
+    font-size: 13px !important;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time .flatpickr-am-pm:focus {
+    background: var(--bk-color-hover) !important;
+    color: var(--color-main-green) !important;
+}
+
+/* Flechas para incrementar y disminuir */
+.flatpickr-time .arrowUp::after {
+    border-bottom-color: var(--bk-color-accent) !important;
+}
+
+.flatpickr-time .arrowDown::after {
+    border-top-color: var(--bk-color-accent) !important;
+}
+
+/*
+    =========================================
+        FLATPICKR - RELOJ PERSONALIZADO 12H
+    =========================================
+*/
+
+/* Contenedor flotante */
+.flatpickr-calendar.hasTime.noCalendar {
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: calc(100vw - 24px) !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+    background: var(--color-white) !important;
+    border: 1px solid var(--color-border-light) !important;
+    box-shadow: var(--bk-shadow-time) !important;
+}
+
+/* Distribución horizontal */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    line-height: normal !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+/* Contenedores de horas y minutos */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time > .numInputWrapper {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    height: 46px !important;
+    border-radius: 10px !important;
+    background: var(--color-base) !important;
+    overflow: hidden !important;
+}
+
+/* Valores de horas y minutos */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time input.numInput {
+    width: 100% !important;
+    height: 46px !important;
+    padding: 0 12px 0 4px !important;
+    color: var(--color-main-green) !important;
+    background: transparent !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Eliminar el resaltado de los números */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time input.numInput::selection {
+    background: transparent !important;
+    color: var(--color-main-green) !important;
+}
+
+/* Eliminar el resaltado al enfocar */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time input.numInput:focus {
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Mantener el fondo del contenedor al enfocar */
+.flatpickr-calendar.hasTime.noCalendar .numInputWrapper:focus-within {
+    background: var(--color-base) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Separador de horas y minutos */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time .flatpickr-time-separator {
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    text-align: center !important;
+    color: var(--bk-color-accent) !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* Selector de a. m. y p. m. */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-am-pm {
+    flex: 0 0 68px !important;
+    width: 68px !important;
+    height: 46px !important;
+    line-height: 46px !important;
+    margin-left: 8px !important;
+    border-radius: 10px !important;
+    background: var(--color-base) !important;
+    color: var(--color-main-green) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+}
+
+/* Efecto al pasar el mouse */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-am-pm:hover,
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-am-pm:focus {
+    background: var(--bk-color-hover-strong) !important;
+    color: var(--color-main-green) !important;
+}
+
+/* Flechas de los números */
+.flatpickr-calendar.hasTime.noCalendar .arrowUp::after {
+    border-bottom-color: var(--bk-color-accent) !important;
+}
+
+.flatpickr-calendar.hasTime.noCalendar .arrowDown::after {
+    border-top-color: var(--bk-color-accent) !important;
+}
+
+/*
+    =========================================
+            AJUSTES RESPONSIVE
+    =========================================
+*/
+
+@media (max-width: 400px) {
+    .flatpickr-calendar {
+        max-width: calc(100vw - 24px);
+    }
+
+    .flatpickr-day {
+        font-size: 12px;
+    }
+}
+
+
+/*
+    =========================================
+            BARBERKING - TOASTS
+    =========================================
+*/
+
+.barberking-toast {
+    border-radius: 12px !important;
+    border: 1px solid var(--color-border-light) !important;
+    box-shadow: var(--bk-shadow-select) !important;
+    padding: 12px 16px !important;
+}
+
+.barberking-toast .swal2-title {
+    font-family: var(--font-sans);
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+}
+
+.barberking-toast .swal2-timer-progress-bar {
+    background: var(--bk-color-accent) !important;
+}
+
+.barberking-toast .swal2-close {
+    color: var(--color-muted) !important;
+}
+
+.barberking-toast .swal2-close:hover {
+    color: var(--color-action) !important;
 }
