@@ -6,6 +6,10 @@ services:
     image: barberia-app
     container_name: barberia_app
     restart: unless-stopped
+    environment:
+      BARBERKING_BOT_API_KEY: ${BARBERKING_BOT_API_KEY}
+      TZ: America/Bogota
+      APP_TIMEZONE: ${APP_TIMEZONE:-America/Bogota}
     working_dir: /var/www
     volumes:
       - ./:/var/www
@@ -56,48 +60,32 @@ services:
     container_name: barberking_n8n
     restart: unless-stopped
     ports:
-      - "5678:5678"
-    volumes:
-      - ./n8n_data:/home/node/.n8n
+      - "127.0.0.1:5678:5678"
     environment:
       - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - NODE_ENV=production
-      - WEBHOOK_URL=https://schemes-mod-often-anti.trycloudflare.com
+      - GENERIC_TIMEZONE=America/Bogota
+      - TZ=America/Bogota
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    volumes:
+      - n8n_data:/home/node/.n8n
     networks:
       - barberia-network
 
-  # --- INICIO BLOQUE WHATSAPP ---
   evolution-api:
-    image: evoapicloud/evolution-api:v1.8.2
+    image: evoapicloud/evolution-api:v1.8.7
     container_name: barberking_evolution
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       - SERVER_URL=http://localhost:8080
-      - AUTHENTICATION_API_KEY=barberking_secret_key_123
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY}
     volumes:
-      - ./evolution_instances:/evolution/instances
-    networks:
-      - barberia-network
-
-  # Tunnel para exponer Evolution al mundo (QR y Webhooks)
-  cloudflared-evo:
-    image: cloudflare/cloudflared:latest
-    container_name: barberking_tunnel_evo
-    restart: unless-stopped
-    command: tunnel --url http://evolution-api:8080
-    networks:
-      - barberia-network
-
-  # Tunnel para exponer n8n al mundo (Para recibir los POST)
-  cloudflared-n8n:
-    image: cloudflare/cloudflared:latest
-    container_name: barberking_tunnel_n8n
-    restart: unless-stopped
-    command: tunnel --url http://n8n:5678
+      - evolution_store:/evolution/store
+      - evolution_instances:/evolution/instances
     networks:
       - barberia-network
 
@@ -105,6 +93,9 @@ volumes:
   pgdata:
   vendor:
   node_modules:
+  n8n_data:
+  evolution_store:
+  evolution_instances:
 
 networks:
   barberia-network:
