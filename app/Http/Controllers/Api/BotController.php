@@ -162,7 +162,7 @@ class BotController extends Controller
                 'fecha_cita' => $datos['fecha_cita'],
                 'hora_cita' => $datos['hora_cita'],
                 'notas' => $datos['notas'] ?? 'Agendado vía Bot de WhatsApp',
-                'estado' => 'confirmado'
+                'estado' => 'confirmada'
             ]);
 
             return response()->json([
@@ -266,7 +266,7 @@ class BotController extends Controller
             }
 
             // Cancelar sin eliminar el registro.
-            $cita->estado = 'Cancelado';
+            $cita->estado = 'cancelada';
             $cita->save();
 
             return response()->json([

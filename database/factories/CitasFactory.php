@@ -19,9 +19,9 @@ class CitasFactory extends Factory
             'servicio_id' => Servicios::inRandomOrder()->value('id'),
             'barbero_id' => User::inRandomOrder()->value('id'),
             'fecha_cita' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
-            'hora_cita' => $this->faker->time('H:i:s'), 
+            'hora_cita' => $this->faker->time('H:i:s'),
             'notas' => $this->faker->optional()->realText(100),
-            'estado' => $this->faker->randomElement(['pendiente', 'confirmado', 'cancelado', 'completado']),
+            'estado' => $this->faker->randomElement(['pendiente', 'confirmada', 'cancelada', 'completada']),
         ];
     }
 }

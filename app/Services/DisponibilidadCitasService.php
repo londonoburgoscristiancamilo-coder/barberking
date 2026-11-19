@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class DisponibilidadCitasService
 {
-    public function obtenerHoras(string $fecha, int $servicioId, int $barberoId, ?int $excluirCitaId = null): array 
+    public function obtenerHoras(string $fecha, int $servicioId, int $barberoId, ?int $excluirCitaId = null): array
     {
         $fecha = Carbon::parse($fecha)->toDateString();
         $servicio = Servicios::findOrFail($servicioId);
@@ -32,7 +32,7 @@ class DisponibilidadCitasService
         $citas = Citas::with('servicio')
             ->where('barbero_id', $barberoId)
             ->whereDate('fecha_cita', $fecha)
-            ->whereIn('estado', ['pendiente', 'confirmado'])
+            ->whereIn('estado', ['pendiente', 'confirmado', 'confirmada'])
             ->when($excluirCitaId, function ($query) use ($excluirCitaId) {
                 $query->where('id', '!=', $excluirCitaId);
             })
