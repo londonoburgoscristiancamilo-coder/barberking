@@ -74,18 +74,56 @@ services:
     networks:
       - barberia-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: barberking_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - barberia-network
+
   evolution-api:
-    image: evoapicloud/evolution-api:v1.8.7
+    image: evoapicloud/evolution-api:v2.3.7
     container_name: barberking_evolution
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"
     environment:
-      - SERVER_URL=http://localhost:8080
-      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY}
+      SERVER_URL: http://localhost:8080
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_KEY}
+      TZ: America/Bogota
+
+      # PostgreSQL
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://${EVOLUTION_DB_USER}:${EVOLUTION_DB_PASSWORD}@db:5432/${EVOLUTION_DB_NAME}
+      DATABASE_CONNECTION_CLIENT_NAME: barberking_evolution
+      DATABASE_SAVE_DATA_INSTANCE: "true"
+      DATABASE_SAVE_DATA_NEW_MESSAGE: "true"
+      DATABASE_SAVE_MESSAGE_UPDATE: "true"
+      DATABASE_SAVE_DATA_CONTACTS: "true"
+      DATABASE_SAVE_DATA_CHATS: "true"
+
+      # Redis
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: redis://redis:6379/0
+      CACHE_REDIS_PREFIX_KEY: barberking
+      CACHE_REDIS_SAVE_INSTANCES: "false"
+      CACHE_LOCAL_ENABLED: "false"
     volumes:
-      - evolution_store:/evolution/store
-      - evolution_instances:/evolution/instances
+      - evolution_v2_instances:/evolution/instances
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - barberia-network
 
@@ -94,8 +132,8 @@ volumes:
   vendor:
   node_modules:
   n8n_data:
-  evolution_store:
-  evolution_instances:
+  redis_data:
+  evolution_v2_instances:
 
 networks:
   barberia-network:
