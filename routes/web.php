@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('citas', CitasController::class);
     Route::get('/api/citas/disponibilidad', [CitasController::class, 'obtenerDisponibilidad'])->name('citas.disponibilidad');
+    Route::patch('/citas/{cita}/estado', [CitasController::class, 'actualizarEstado'])->name('citas.estado');
 });
 
 require __DIR__.'/auth.php';

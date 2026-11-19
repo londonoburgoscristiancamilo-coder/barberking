@@ -164,4 +164,32 @@ class CitasController extends Controller
 
         return response()->json($horas);
     }
+
+    public function actualizarEstado(Request $request, Citas $cita)
+    {
+        // Validar el estado seleccionado
+        $datos = $request->validate([
+            'estado' => [
+                'required',
+                Rule::in([
+                    'pendiente',
+                    'confirmada',
+                    'completada',
+                    'cancelada'
+                ])
+            ]
+        ]);
+
+        // Evitar actualizaciones innecesarias
+        if ($cita->estado === $datos['estado']) {
+            return redirect()->route('citas.index');
+        }
+
+        // Actualizar únicamente el estado de la cita
+        $cita->estado = $datos['estado'];
+        $cita->save();
+
+        return redirect()->route('citas.index')
+            ->with('success', 'El estado de la cita se actualizó correctamente.');
+    }
 }
