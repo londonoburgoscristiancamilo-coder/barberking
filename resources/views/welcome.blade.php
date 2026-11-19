@@ -16,11 +16,11 @@
     <!-- Scripts y Estilos -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-auth-background text-auth-text flex items-center justify-center min-h-screen p-4 selection:bg-auth-accent selection:text-white">
+<body class="bg-auth-background text-auth-text flex items-center justify-center min-h-dvh px-4 py-6 sm:px-6 sm:py-10 selection:bg-auth-accent selection:text-white">
 
-    <!-- Contenedor Principal Estilo Móvil / Tarjeta Central -->
-    <main class="w-full max-w-md bg-auth-background flex flex-col items-center justify-between px-6 pb-10 -mt-15 text-center rounded-3xl">
-        
+    <!-- Contenedor Principal Responsive -->
+    <main class="w-full max-w-md mx-auto bg-auth-background flex flex-col items-center px-4 sm:px-6 py-4 sm:py-6 text-center rounded-3xl">
+
         <!-- Espacio superior / Navegación -->
         <div class="w-full flex justify-end">
             @if (Route::has('login'))
@@ -36,16 +36,16 @@
 
         <!-- Sección del Logo y Marca -->
         <div class="flex flex-col items-center w-full">
-            
+
             <!-- Logo -->
-            <div>
-                <a href="/">
+            <div class="flex justify-center w-full">
+                <a href="/" class="inline-flex items-center justify-center">
                     <x-application-logo class="w-20 h-20 fill-current text-muted" />
                 </a>
             </div>
-            
+
             <!-- Separador -->
-            <div class="w-20 h-0.75 bg-auth-divider/40 mx-auto mt-8 mb-8"></div>
+            <div class="w-20 h-0.75 bg-auth-divider/40 mx-auto mt-6 sm:mt-8 mb-6 sm:mb-8"></div>
 
             <!-- Copy / Eslogan -->
             <h2 class="text-5xl font-semibold text-auth-heading mb-3">
@@ -56,7 +56,7 @@
             </p>
 
             <!-- Separador -->
-            <div class="w-20 h-0.75 bg-auth-divider/40 mx-auto mb-12"></div>
+            <div class="w-20 h-0.75 bg-auth-divider/40 mx-auto mb-8 sm:mb-12"></div>
         </div>
 
         <!-- Botones de Acción con Jerarquía -->
