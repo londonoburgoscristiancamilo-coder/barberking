@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\DisponibilidadCitasService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class BotController extends Controller
 {
@@ -169,6 +170,112 @@ class BotController extends Controller
                 'mensaje' => 'Cita guardada correctamente',
                 'cita_id' => $cita->id
             ], 201);
+        });
+    }
+
+    // 8. Cancelar una cita
+    public function cancelarCita(Request $request)
+    {
+        $datos = $request->validate([
+            'cita_id' => ['required', 'integer'],
+            'cliente_id' => ['required', 'integer'],
+            'documento_identidad' => ['required', 'string'],
+            'telefono_whatsapp' => ['required', 'string'],
+        ]);
+
+        return DB::transaction(function () use ($datos) {
+
+            $cita = Citas::with('cliente')
+                ->lockForUpdate()
+                ->find($datos['cita_id']);
+
+            if (!$cita || !$cita->cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cita no encontrada.',
+                ], 404);
+            }
+
+            $cliente = $cita->cliente;
+
+            // Verificar que la cita pertenezca al cliente.
+            if (
+                (int) $cita->cliente_id !== (int) $datos['cliente_id'] ||
+                (string) $cliente->documento_identidad !==
+                    (string) $datos['documento_identidad']
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No autorizado para cancelar esta cita.',
+                ], 403);
+            }
+
+            // Verificar el teléfono de WhatsApp.
+            $telefonoCliente = preg_replace(
+                '/\D/',
+                '',
+                (string) $cliente->telefono
+            );
+
+            $telefonoWhatsApp = preg_replace(
+                '/\D/',
+                '',
+                $datos['telefono_whatsapp']
+            );
+
+            if (
+                strlen($telefonoCliente) < 10 ||
+                strlen($telefonoWhatsApp) < 10 ||
+                substr($telefonoCliente, -10) !==
+                    substr($telefonoWhatsApp, -10)
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El teléfono no coincide.',
+                ], 403);
+            }
+
+            // Solo se permiten estados cancelables.
+            $estado = mb_strtolower(trim($cita->estado));
+
+            if (!in_array($estado, [
+                'pendiente',
+                'confirmado',
+                'confirmada',
+            ], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta cita no puede cancelarse.',
+                ], 409);
+            }
+
+            // No permitir cancelar citas que ya comenzaron.
+            $inicio = Carbon::parse(
+                Carbon::parse($cita->fecha_cita)->format('Y-m-d')
+                . ' ' . $cita->hora_cita,
+                'America/Bogota'
+            );
+
+            if ($inicio->lessThanOrEqualTo(
+                Carbon::now('America/Bogota')
+            )) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La cita ya comenzó o pasó.',
+                ], 409);
+            }
+
+            // Cancelar sin eliminar el registro.
+            $cita->estado = 'Cancelado';
+            $cita->save();
+
+            return response()->json([
+                'success' => true,
+                'cancelada' => true,
+                'cita_id' => $cita->id,
+                'estado' => $cita->estado,
+                'message' => 'Cita cancelada correctamente.',
+            ]);
         });
     }
 }

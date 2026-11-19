@@ -17,4 +17,5 @@ Route::prefix('bot')->middleware(VerifyBotApiKey::class)->group(function () {
     Route::post('/disponibilidad', [BotController::class, 'getDisponibilidad']);
     Route::post('/citas/consultar', [BotController::class, 'getCitasCliente']);
     Route::post('/citas', [BotController::class, 'storeCita']);
+    Route::post('/citas/cancelar', [BotController::class, 'cancelarCita']);
 });
