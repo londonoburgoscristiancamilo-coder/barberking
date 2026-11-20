@@ -1,0 +1,4029 @@
+{
+  "name": "BarberKing Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "085a615b-a82a-485d-9106-e490b842474f",
+              "leftValue": "={{ $json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6db8b2d2-c9e1-4b98-b03b-1b67b5465c52",
+      "name": "If - Unicamente Procesar Mensajes de Clientes"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "barberking-whatsapp",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0e95ffa1-fe1b-4145-a498-dd16294c3d0b",
+      "name": "Webhook - Evolution API Reenvía Todos los Mensajes que Llegan",
+      "webhookId": "791b9ac7-5baa-40ca-98a4-16cdbb7995cc"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "61d3eda6-61a2-4f01-8694-08c1ca470d99",
+              "leftValue": "={{ $json.mensaje_texto }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4dc28b9b-7059-4994-9342-6e9e90b48116",
+              "leftValue": "={{ $json.mensaje_tipo }}",
+              "rightValue": "stickerMessage",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "93fe18e4-9e32-4db6-9e3f-fbe1e4a334f3",
+              "leftValue": "={{ $json.mensaje_tipo }}",
+              "rightValue": "audioMessage",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "f5a671a2-96d0-4d6b-aa0f-a92bf1451b18",
+              "leftValue": "={{ $json.mensaje_tipo }}",
+              "rightValue": "imageMessage",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "536ade69-0614-4a96-b13c-0204f4d53f97",
+              "leftValue": "={{ $json.mensaje_tipo }}",
+              "rightValue": "videoMessage",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        672,
+        -64
+      ],
+      "id": "7f4e2c5f-616e-4aa2-b103-20117db50bbd",
+      "name": "IF - Validar Mensaje de Texto"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        448,
+        112
+      ],
+      "id": "df0a11ee-616b-4c9c-a577-1e190afc91da",
+      "name": "NoOp 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dabf4997-3f47-408f-af15-ce6359806e16",
+              "name": "=mensaje_id",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "b8706974-dc51-408a-82f7-e2ee1ef2c4ad",
+              "name": "=cliente_id",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "7caabbfb-996a-416f-833b-7d2d797b3450",
+              "name": "=cliente_nombre",
+              "value": "={{ $json.body.data.pushName ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "3474b101-53ad-45d7-a09e-3175601a1401",
+              "name": "=mensaje_tipo",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "1795fee7-9c50-442d-9c61-f2c14021d2fb",
+              "name": "=mensaje_texto",
+              "value": "={{ $json.body.data.message?.conversation ?? $json.body.data.message?.extendedTextMessage?.text ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        -64
+      ],
+      "id": "245b24be-c755-4837-9b70-1d77ff9f2ffb",
+      "name": "Edit Fields - Procesar Datos Relevantes"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ \"👋 ¡Hola! Gracias por comunicarte con BarberKing. 💈✂️\\n\\nPor el momento, nuestro asistente virtual solo puede procesar mensajes de texto. 📝\\n\\n🚫 Los audios, fotografías, videos y stickers no serán procesados.\\n\\n💬 Por favor, escribe tu consulta para que podamos ayudarte con nuestros servicios y tus citas.\\n\\n¡Gracias por tu comprensión! 😎\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        816,
+        128
+      ],
+      "id": "ea050bf1-1f63-4a27-bdf9-63ab421a13fa",
+      "name": "HTTP Request - Advertir Mensaje No Admitido",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 12,
+        "output": "={{ (()=>{const texto=String($('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto??'').trim().toLowerCase();const estado=String($json.estado??'menu_principal');if(/^(0|menu|menú|inicio)$/.test(texto))return 4;if(estado.startsWith('gestion_'))return 11;if(texto==='cancelar')return 4;if(estado.startsWith('cita_'))return 10;if(texto==='agendar'||(texto==='1'&&estado==='horario_resultado'))return 0;if(texto==='horarios'||texto==='consultar horarios'||(texto==='3'&&(!estado.startsWith('horario_')||estado==='horario_resultado')))return 2;if(estado==='horario_servicio')return 6;if(estado==='horario_barbero')return 7;if(estado==='horario_fecha')return 8;if(estado==='horario_resultado')return 9;if(texto==='1')return 0;if(texto==='2')return 1;if(texto==='3')return 2;if(texto==='4')return 3;return 5;})() }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        1312,
+        96
+      ],
+      "id": "f14ae013-94f4-4d3b-a7b9-d95043900ef2",
+      "name": "Switch - Identificar Petición"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1792,
+        1440
+      ],
+      "id": "4d484253-2b0d-4bb9-8826-fe0d99e0effe",
+      "name": "HTTP Request - Consultar Servicios",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        832,
+        352
+      ],
+      "id": "1ede6131-cc5f-426b-b4d8-fc9f3a34dfd7",
+      "name": "NoOp 2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ \"🤔 ¡Ups! No he entendido tu respuesta.\\n\\nRecuerda que estas son las opciones disponibles en BarberKing. 💈✂️\\n\\n📅 *1.* Agendar una cita\\n✂️ *2.* Consultar nuestros servicios\\n🕒 *3.* Consultar horarios disponibles\\n📋 *4.* Consultar o cancelar una cita\\n\\n💬 Por favor, responde con el número de la opción que deseas seleccionar.\\n\\n¡Estoy aquí para ayudarte! 😎\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1216,
+        640
+      ],
+      "id": "2a8179fc-50ed-454f-96df-6fc8165c715e",
+      "name": "HTTP Request - Fallback (Menú)",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZXvP0ybLXbH512pB",
+          "mode": "list",
+          "cachedResultName": "barberking_conversaciones",
+          "cachedResultUrl": "/projects/cTDuWfJbkhm8csMN/datatables/ZXvP0ybLXbH512pB"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $json.cliente_id }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        -240
+      ],
+      "id": "bd59ba0f-8971-4e50-b44e-746953581854",
+      "name": "Data Table - Buscar Conversación",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "cdd4db73-0f3d-4fac-b9ae-898021e76788",
+              "leftValue": "={{ $json.id === undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1072,
+        -240
+      ],
+      "id": "9d3b0ab4-f6b1-4183-b622-ed47cad0dd48",
+      "name": "IF - ¿Cliente Nuevo?"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZXvP0ybLXbH512pB",
+          "mode": "list",
+          "cachedResultName": "barberking_conversaciones",
+          "cachedResultUrl": "/projects/cTDuWfJbkhm8csMN/datatables/ZXvP0ybLXbH512pB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cliente_id": "={{ $('Edit Fields - Procesar Datos Relevantes').item.json.cliente_id }}",
+            "estado": "menu_principal",
+            "nombre": "={{ $('Edit Fields - Procesar Datos Relevantes').item.json.cliente_nombre }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1296,
+        -336
+      ],
+      "id": "bf2806d6-4504-4609-811c-f0c688ff2c57",
+      "name": "Data Table - Registrar Conversación"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ \"👋 ¡Hola! ¡Bienvenido/a a BarberKing! 💈\\n\\nA través de este WhatsApp podrás consultar nuestros servicios, conocer nuestros horarios y gestionar tus citas de manera fácil y rápida. 📅\\n\\nEstoy aquí para ayudarte. ¿Qué deseas hacer hoy? 🤔\\n\\n📅 *1.* Agendar una cita\\n✂️ *2.* Consultar nuestros servicios\\n🕒 *3.* Consultar horarios disponibles\\n📋 *4.* Consultar o cancelar una cita\\n\\n💬 Responde con el número de la opción que deseas seleccionar.\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1568,
+        -336
+      ],
+      "id": "dcef7470-541a-445e-8aa6-9b366fd5e1f8",
+      "name": "HTTP Request - Bienvenida",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ \"🏠 *¡De vuelta al menú principal de BarberKing!* 💈✂️\\n\\nEstas son las opciones disponibles para ti:\\n\\n📅 *1.* Agendar una cita\\n✂️ *2.* Consultar nuestros servicios\\n🕒 *3.* Consultar horarios disponibles\\n📋 *4.* Consultar o cancelar una cita\\n\\n💬 Responde con el número de la opción que deseas seleccionar.\\n\\n¡Estoy aquí para ayudarte! 😎\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1792,
+        1696
+      ],
+      "id": "f24b6701-e2bd-43e6-b5f8-8fc4d8adb1dd",
+      "name": "HTTP Request - Repetir Menú",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/servicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "cfc3799d-7294-40c9-bc0c-e683c0649686",
+      "name": "HTTP Request - Laravel Catálogo de Servicios",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2048,
+        1440
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "Consulta de solo lectura al catálogo Laravel. Pendiente de configurar credencial según VerifyBotApiKey. Nodo desconectado para no afectar respuestas actuales."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZXvP0ybLXbH512pB",
+          "mode": "list",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "viendo_servicios",
+            "ultima_opcion": "2"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c0a66388-b750-4fd9-83a5-d794e57394c9",
+      "name": "Data Table - Guardar Estado Servicios",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        1440
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(i => i.json);\nconst primero = items[0] ?? {};\nconst origen = $('Edit Fields - Procesar Datos Relevantes').first().json;\nconst status = Number(primero.statusCode ?? primero.status ?? 200);\nlet servicios = [];\nlet error = Boolean(primero.error) || status < 200 || status >= 400;\nif (!error) {\n  if (Array.isArray(primero.body)) servicios = primero.body;\n  else if (Array.isArray(primero.body?.data)) servicios = primero.body.data;\n  else if (Array.isArray(primero.data)) servicios = primero.data;\n  else if (items.every(s => s && typeof s.nombre === 'string')) servicios = items;\n  else if (primero.body == null || (typeof primero.body === 'object' && Object.keys(primero.body).length === 0)) servicios = [];\n  else error = true;\n}\nconst validos = servicios.filter(s => s && typeof s.nombre === 'string' && s.nombre.trim());\nconst limpiar = s => String(s ?? '').replace(/[\\r\\n]+/g, ' ').replace(/[*_~\\x60]/g, '').trim();\nconst pesos = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 });\nlet mensaje;\nif (error) mensaje = '😔 *No pudimos consultar nuestros servicios en este momento.*\\n\\nIntenta de nuevo en unos minutos.\\n\\n🏠 Escribe *0* para volver al menú.';\nelse if (!validos.length) mensaje = '💈 *Servicios de BarberKing*\\n\\nPor ahora no tenemos servicios disponibles para mostrarte.\\n\\n🏠 Escribe *0* para volver al menú.';\nelse {\n  const detalle = validos.map((s, index) => {\n    const precio = Number(s.precio);\n    const duracion = Number(s.duracion_minutos);\n    const valor = Number.isFinite(precio) && precio >= 0 ? '$' + pesos.format(precio) + ' COP' : 'Por confirmar';\n    const minutos = Number.isFinite(duracion) && duracion > 0 ? duracion + ' minutos' : 'Por confirmar';\n    return '✂️ *' + (index + 1) + '. ' + limpiar(s.nombre) + '*\\n💰 ' + valor + '\\n⏱️ ' + minutos;\n  });\n  mensaje = '💈 *Nuestros servicios*\\n\\n' + detalle.join('\\n\\n') + '\\n\\n📅 Escribe *1* para agendar.\\n🏠 Escribe *0* para el menú.';\n}\nreturn [{json:{cliente_id:origen.cliente_id,respuesta:mensaje,consulta_ok:!error,servicios_count:validos.length}}];"
+      },
+      "id": "dfc98ece-614d-40e8-a6b9-42151408e30e",
+      "name": "Code - Formatear Catálogo WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZXvP0ybLXbH512pB",
+          "mode": "list",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "menu_principal",
+            "ultima_opcion": "0",
+            "servicio_id": "",
+            "barbero_id": "",
+            "fecha_consulta": "",
+            "gestion_documento": "",
+            "gestion_telefono": "",
+            "gestion_cliente_id": "",
+            "gestion_citas": "",
+            "gestion_cita_id": ""
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_apellidos",
+              "displayName": "cita_apellidos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_barbero_nombre",
+              "displayName": "cita_barbero_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_cliente_id",
+              "displayName": "cita_cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_documento",
+              "displayName": "cita_documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_hora",
+              "displayName": "cita_hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_nombres",
+              "displayName": "cita_nombres",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_opciones",
+              "displayName": "cita_opciones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_servicio_nombre",
+              "displayName": "cita_servicio_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_telefono",
+              "displayName": "cita_telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_cita_id",
+              "displayName": "gestion_cita_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_citas",
+              "displayName": "gestion_citas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_cliente_id",
+              "displayName": "gestion_cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_documento",
+              "displayName": "gestion_documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_telefono",
+              "displayName": "gestion_telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "88a62eba-66de-42aa-805e-16f098344c3f",
+      "name": "Data Table - Restablecer Menú",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        1696
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/servicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "8fdb5822-1b24-4f98-b47c-9d1404f99c7b",
+      "name": "Laravel - Horarios Listar Servicios",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        1920
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(item => item.json);\nconst primero = items[0] ?? {};\nconst status = Number(primero.statusCode ?? 200);\nconst correcto = status >= 200 && status < 300 && !primero.error;\nconst servicios = Array.isArray(primero.body) ? primero.body\n  : Array.isArray(primero.body?.data) ? primero.body.data\n  : Array.isArray(primero.data) ? primero.data\n  : items.every(item => item && typeof item === 'object' && 'id' in item) ? items\n  : [];\nconst moneda = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 });\nconst limpiar = valor => String(valor ?? '').replace(/[\\r\\n]+/g, ' ').replace(/[*_~\\x60]/g, '').trim();\nconst contenido = servicios.map((s, i) => {\n  const minutos = Number(s.duracion_minutos);\n  const precio = Number(s.precio);\n  const duracion = Number.isFinite(minutos) && minutos > 0 ? minutos + ' minutos' : 'Por confirmar';\n  const valor = Number.isFinite(precio) && precio >= 0 ? '$' + moneda.format(precio) : 'Por confirmar';\n  return '*' + (i + 1) + '.* ' + limpiar(s.nombre ?? 'Servicio') + ' - Duración ' + duracion + ' - Precio ' + valor;\n}).join('\\n');\nconst mensaje = !correcto\n  ? '😔 No pude consultar nuestros servicios. Intenta otra vez enviando *3*.\\n🏠 *0* para el menú.'\n  : servicios.length === 0\n  ? '💈 No hay servicios para consultar horarios.\\n\\n🏠 Escribe *0* para volver al menú.'\n  : '✂️ *Consultar horarios disponibles*\\n\\nPrimero elige un servicio:\\n\\n' + contenido + '\\n\\n💬 Responde con el número del servicio.\\n🏠 *0* para el menú.';\nreturn [{ json: { respuesta: mensaje, valido: correcto && servicios.length > 0 } }];"
+      },
+      "id": "7b4815e6-dd2b-41c5-a22e-b3dc2d037dca",
+      "name": "Code - Horarios Mostrar Servicios",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "horario_servicio",
+            "ultima_opcion": "3",
+            "servicio_id": "",
+            "barbero_id": "",
+            "fecha_consulta": ""
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b3684006-f552-41e4-8024-767d748c6640",
+      "name": "Estado - Horarios Elegir Servicio",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2032,
+        1920
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/servicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "3f01b18d-c37d-4261-901f-851efd6ea61c",
+      "name": "Laravel - Horarios Validar Servicio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        2192
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const a=$input.all().map(i=>i.json);const p=a[0]??{};const status=Number(p.statusCode??200);const ok=status>=200&&status<300&&!p.error;const lista=Array.isArray(p.body)?p.body:Array.isArray(p.body?.data)?p.body.data:Array.isArray(p.data)?p.data:a.every(x=>x&&typeof x==='object'&&'id' in x)?a:[];\nconst m=$('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto.trim();const i=/^[1-9]\\d*$/.test(m)?Number(m)-1:-1;const elegido=ok?lista[i]:undefined;\nreturn [{json:elegido?{valido:true,servicio_id:String(elegido.id),respuesta:'Servicio seleccionado: '+String(elegido.nombre)}:{valido:false,respuesta:ok?'⚠️ Opción de servicio no válida. Escribe un número de la lista o *3* para empezar de nuevo.\\n🏠 *0* para el menú.':'😔 No fue posible validar ese servicio. Escribe *3* para intentarlo de nuevo.\\n🏠 *0* para el menú.'}}];"
+      },
+      "id": "42dddc7f-85ca-4aaf-941a-d6fcde0f3a90",
+      "name": "Code - Horarios Seleccionar Servicio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        2192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "45cc8e97-91b7-4c75-9fd4-8b00d0bab924",
+      "name": "IF - Horarios Servicio Valido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        2032,
+        2192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "horario_barbero",
+            "servicio_id": "={{ $('Code - Horarios Seleccionar Servicio').first().json.servicio_id }}",
+            "barbero_id": "",
+            "fecha_consulta": ""
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b1dc39d3-a04c-4a30-bc2a-da2221a8e456",
+      "name": "Estado - Horarios Elegir Barbero",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        2112
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/barberos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "cc4d457b-bd9a-4d1e-ac9c-8144ff1f02dc",
+      "name": "Laravel - Horarios Listar Barberos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2480,
+        2112
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const a=$input.all().map(i=>i.json);const p=a[0]??{};const status=Number(p.statusCode??200);const ok=status>=200&&status<300&&!p.error;const lista=Array.isArray(p.body)?p.body:Array.isArray(p.body?.data)?p.body.data:Array.isArray(p.data)?p.data:a.every(x=>x&&typeof x==='object'&&'id' in x)?a:[];\nconst r=ok?(lista.length?'💈 *Elige tu barbero*\\n\\n'+lista.map((b,i)=>'*'+(i+1)+'.* '+String(b.name??'Barbero').replace(/[\\r\\n]/g,' ')).join('\\n')+'\\n\\n💬 Responde con el número del barbero.\\n🏠 *0* para el menú.':'😔 No tenemos barberos disponibles para mostrar.\\n\\nEscribe *3* para comenzar otra consulta.'):'😔 No pude consultar los barberos.\\n\\nEscribe *3* para intentar de nuevo.';\nreturn [{json:{respuesta:r,valido:ok&&lista.length>0}}];"
+      },
+      "id": "6bdd3056-1d8b-4581-80ce-c49c218f0907",
+      "name": "Code - Horarios Mostrar Barberos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/barberos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "0b9bbf4a-d9c2-4b69-81df-b3c21e4f892a",
+      "name": "Laravel - Horarios Validar Barbero",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        2560
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const a=$input.all().map(i=>i.json);const p=a[0]??{};const status=Number(p.statusCode??200);const ok=status>=200&&status<300&&!p.error;const lista=Array.isArray(p.body)?p.body:Array.isArray(p.body?.data)?p.body.data:Array.isArray(p.data)?p.data:a.every(x=>x&&typeof x==='object'&&'id' in x)?a:[];\nconst m=$('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto.trim();const i=/^[1-9]\\d*$/.test(m)?Number(m)-1:-1;const elegido=ok?lista[i]:undefined;\nreturn [{json:elegido?{valido:true,barbero_id:String(elegido.id),respuesta:'Barbero: '+String(elegido.name)}:{valido:false,respuesta:ok?'⚠️ Número de barbero no válido. Elige una opción de la lista.\\n🏠 *0* para el menú.':'😔 No fue posible validar al barbero. Escribe *3* para volver a empezar.'}}];"
+      },
+      "id": "fbf10578-a6c3-405e-89cb-78b5905bad69",
+      "name": "Code - Horarios Seleccionar Barbero",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b40c0119-5b4c-427a-bca2-e209db4bfa11",
+      "name": "IF - Horarios Barbero Valido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        2032,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "horario_fecha",
+            "barbero_id": "={{ $('Code - Horarios Seleccionar Barbero').first().json.barbero_id }}",
+            "fecha_consulta": ""
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "31188722-e8fd-4544-99af-212afb304d61",
+      "name": "Estado - Horarios Elegir Fecha",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        2480
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst mensaje=String($('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto??'').trim();const estado=$('Data Table - Buscar Conversación').first().json;const valido=/^\\d{4}-\\d{2}-\\d{2}$/.test(mensaje)&&!Number.isNaN(Date.parse(mensaje+'T12:00:00Z'))&&new Date(mensaje+'T12:00:00Z').toISOString().slice(0,10)===mensaje;const partes=new Intl.DateTimeFormat('en-US',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const x=Object.fromEntries(partes.map(p=>[p.type,p.value]));const hoy=x.year+'-'+x.month+'-'+x.day;const servicio_id=Number(estado.servicio_id),barbero_id=Number(estado.barbero_id);const correcto=valido&&mensaje>=hoy&&Number.isInteger(servicio_id)&&servicio_id>0&&Number.isInteger(barbero_id)&&barbero_id>0;\nreturn [{json:{valido:correcto,fecha:mensaje,servicio_id,barbero_id,respuesta:!valido?'⚠️ Fecha inválida. Usa el formato *AAAA-MM-DD* (ejemplo: 2026-12-15).\\n🏠 *0* para el menú.':mensaje<hoy?'⚠️ No podemos consultar una fecha pasada. Escribe una fecha desde hoy en formato *AAAA-MM-DD*.':!correcto?'😔 Tu consulta perdió datos. Envía *3* para volver a empezar.':''}}];"
+      },
+      "id": "529fa802-023f-4029-b40f-20a0b17eb488",
+      "name": "Code - Horarios Validar Fecha",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        2912
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8bbebac5-7355-4977-a59b-c05c38a3ae95",
+      "name": "IF - Horarios Fecha Valida",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1808,
+        2912
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://webserver/api/bot/disponibilidad",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { fecha: $json.fecha, servicio_id: $json.servicio_id, barbero_id: $json.barbero_id } }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "0b571cf9-cab0-4729-9fbf-7067ebd6fec0",
+      "name": "Laravel - Horarios Consultar Disponibilidad",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2032,
+        2832
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst fechaLegible = valor => {\n const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];\n const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];\n return String(valor??'').replace(/\\b(\\d{4})-(\\d{2})-(\\d{2})\\b/g,(coincidencia,anio,mes,dia)=>{\n  const d=new Date(Date.UTC(Number(anio),Number(mes)-1,Number(dia),12));\n  if(d.getUTCFullYear()!==Number(anio)||d.getUTCMonth()!==Number(mes)-1||d.getUTCDate()!==Number(dia))return coincidencia;\n  return dias[d.getUTCDay()]+' '+Number(dia)+' de '+meses[d.getUTCMonth()]+' de '+anio;\n });\n};\nconst a=$input.all().map(i=>i.json);const p=a[0]??{};const status=Number(p.statusCode??200);const ok=status>=200&&status<300&&!p.error;const lista=Array.isArray(p.body)?p.body:Array.isArray(p.body?.data)?p.body.data:Array.isArray(p.data)?p.data:a.every(x=>x&&typeof x==='object'&&'id' in x)?a:[];\nconst horas=ok?lista.map(h=>typeof h==='string'?h:(h?.hora??h?.hora_cita??h?.time??null)).filter(h=>typeof h==='string'&&/^\\d{2}:\\d{2}/.test(h)).map(h=>h.slice(0,5)):[];\nconst formato12 = (hora) => {\n  const [h, m] = hora.split(':').map(Number);\n  const hora12 = h % 12 || 12;\n  return hora12 + ':' + String(m).padStart(2, '0') + (h < 12 ? ' a. m.' : ' p. m.');\n};\nconst fecha=fechaLegible($('Code - Horarios Validar Fecha').first().json.fecha);\nconst msg=!ok?'😔 No pudimos consultar la disponibilidad ahora. Escribe *3* para intentarlo de nuevo.':horas.length?'📅 *Horarios disponibles para '+fecha+'*\\n\\n'+horas.map((h,i)=>'🕒 *'+(i+1)+'.* '+formato12(h)).join('\\n')+'\\n\\n💈 Los horarios son informativos y pueden cambiar antes de agendar.\\n📅 Escribe *1* para agendar.\\n🔎 Escribe *3* para otra consulta.\\n🏠 Escribe *0* para el menú.':'📅 *'+fecha+'*\\n\\nPor ahora no hay horarios disponibles para esa combinación de servicio y barbero.\\n\\n🔎 Escribe *3* para consultar otra fecha o servicio.\\n🏠 Escribe *0* para el menú.';\nreturn [{json:{respuesta:msg,horas_count:horas.length}}];"
+      },
+      "id": "e81152c9-e347-42be-99f0-b8b33e982de0",
+      "name": "Code - Horarios Formatear Disponibilidad",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        2832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "horario_resultado",
+            "fecha_consulta": "={{ $('Code - Horarios Validar Fecha').first().json.fecha }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "af13fec3-6c5a-4179-a02a-3865396f2dd9",
+      "name": "Estado - Horarios Resultado",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2480,
+        2832
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('Code - Horarios Mostrar Servicios').first().json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a9dc3202-94ce-4828-bdac-06d9dae7a329",
+      "name": "WhatsApp - Horarios Lista Servicios",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2256,
+        1920
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('Code - Horarios Mostrar Barberos').first().json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aa3b41b0-aa84-418e-82be-c2fb5e73c23f",
+      "name": "WhatsApp - Horarios Barberos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2928,
+        2112
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4766ff0e-b84f-40ab-9da6-f170137701a4",
+      "name": "WhatsApp - Horarios Servicio Invalido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2256,
+        2288
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ '📅 *Ahora indica una fecha para consultar horarios.*\\n\\nEscribe la fecha en formato *AAAA-MM-DD* (por ejemplo, 2026-12-15).\\n\\n🏠 *0* para el menú.' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "56bde4f5-5869-41d3-9eda-c75c674bc5be",
+      "name": "WhatsApp - Horarios Pedir Fecha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2480,
+        2480
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "47ac9653-4898-4229-a41e-2e8bebd7935b",
+      "name": "WhatsApp - Horarios Barbero Invalido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2256,
+        2640
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c4e71870-ff82-45b7-9a9b-7506b1630edc",
+      "name": "WhatsApp - Horarios Fecha Invalida",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2032,
+        3024
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('Code - Horarios Formatear Disponibilidad').first().json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9ede6956-7364-411d-aa9e-ceac0ae49578",
+      "name": "WhatsApp - Horarios Resultado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2704,
+        2832
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ '✅ La consulta de horarios ya terminó.\\n\\nEscribe *3* para consultar nuevamente o *0* para regresar al menú.' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9ffc89c5-95a6-4eb1-9ba7-b92fd3ec44c5",
+      "name": "WhatsApp - Horarios Consulta Finalizada",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        3152
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$('Data Table - Buscar Conversación').first().json;\nconst m=String($('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto??'').trim();\nconst s=String(r.estado??'menu_principal');\nconst cols=['estado','ultima_opcion','servicio_id','barbero_id','fecha_consulta','cita_cliente_id','cita_documento','cita_nombres','cita_apellidos','cita_telefono','cita_opciones','cita_hora','cita_servicio_nombre','cita_barbero_nombre'];\nconst b=Object.fromEntries(cols.map(k=>[k,String(r[k]??'')]));\nconst limpiar=x=>String(x??'').replace(/[\\r\\n*_~\\x60]/g,' ').trim();\nconst h12=h=>{const [a,z]=String(h).split(':').map(Number);return(a%12||12)+':'+String(z).padStart(2,'0')+(a<12?' a. m.':' p. m.')};\nconst end=(c={},respuesta='',tipo='',ruta='',payload={})=>[{json:{...b,...c,respuesta,necesita_api:!!tipo,api_tipo:tipo,api_metodo:tipo&&['catalogo','barberos'].includes(tipo)?'GET':'POST',api_url:tipo?'http://webserver/api/bot/'+ruta:'',api_body:payload,siguiente_api:false}}];\nlet opts=[];try{opts=JSON.parse(b.cita_opciones);if(!Array.isArray(opts))opts=[]}catch{}\nconst idx=/^[1-9]\\d*$/.test(m)?Number(m)-1:-1;\nconst reset={estado:'cita_documento',ultima_opcion:'1',servicio_id:'',barbero_id:'',fecha_consulta:'',cita_cliente_id:'',cita_documento:'',cita_nombres:'',cita_apellidos:'',cita_telefono:'',cita_opciones:'',cita_hora:'',cita_servicio_nombre:'',cita_barbero_nombre:''};\nif(!s.startsWith('cita_'))return end(reset,'📅 *Agendar cita en BarberKing* 💈\\n\\n🪪 Escribe tu *documento de identidad* (solo números).\\n🏠 Escribe *0* para cancelar.');\nif(s==='cita_documento'){\n if(!/^\\d{5,15}$/.test(m))return end({},'⚠️ Escribe entre 5 y 15 dígitos para el documento.\\n🏠 Escribe *0* para cancelar.');\n return end({cita_documento:m},'','buscar','clientes/buscar',{documento_identidad:m});\n}\nif(s==='cita_nombres'){\n if(!/^[\\p{L}][\\p{L}\\s.'-]{1,69}$/u.test(m))return end({},'⚠️ Introduce nombres válidos (2 a 70 caracteres).');\n return end({estado:'cita_apellidos',cita_nombres:limpiar(m)},'👤 Ahora escribe tus *apellidos*.\\n🏠 Escribe *0* para cancelar.');\n}\nif(s==='cita_apellidos'){\n if(!/^[\\p{L}][\\p{L}\\s.'-]{1,69}$/u.test(m))return end({},'⚠️ Introduce apellidos válidos (2 a 70 caracteres).');\n return end({estado:'cita_telefono',cita_apellidos:limpiar(m)},'📱 Escribe tu *número de celular colombiano de 10 dígitos*, comenzando por *3*.\\n🏠 Escribe *0* para cancelar.');\n}\nif(s==='cita_telefono'){\n const t=m;\n if(!/^3\\d{9}$/.test(t))return end({},'⚠️ Celular inválido. Debe comenzar por *3* y tener *exactamente 10 dígitos*.\\n🏠 Escribe *0* para cancelar.');\n return end({cita_telefono:t},'','crear_cliente','clientes',{documento_identidad:b.cita_documento,nombres:b.cita_nombres,apellidos:b.cita_apellidos,telefono:t});\n}\nif(s==='cita_servicio'){\n if(/^(servicios|lista)$/i.test(m))return end({},'','catalogo','servicios');\n const x=opts[idx];if(!x||!(Number(x.id)>0))return end({},'⚠️ *Ese número no corresponde a ningún servicio.*\\n\\n✂️ Responde con un número del *1 al '+opts.length+'* para elegir tu servicio.\\n📋 Escribe *servicios* para ver nuevamente el catálogo.\\n🏠 Escribe *0* para cancelar.');\n return end({servicio_id:String(x.id),cita_servicio_nombre:limpiar(x.nombre),cita_opciones:''},'','barberos','barberos');\n}\nif(s==='cita_barbero'){\n if(/^(barberos|lista)$/i.test(m))return end({},'','barberos','barberos');\n const x=opts[idx];if(!x||!(Number(x.id)>0))return end({},'⚠️ Elige un número de barbero válido.\\n💈 Escribe *barberos* para ver nuevamente la lista.\\n🏠 Escribe *0* para cancelar.');\n return end({estado:'cita_fecha',barbero_id:String(x.id),cita_barbero_nombre:limpiar(x.nombre),cita_opciones:''},'📅 ¿Qué día quieres venir? Escribe la fecha así: *AAAA-MM-DD* (por ejemplo, *2026-12-15*).\\n🏠 Escribe *0* para cancelar.');\n}\nif(s==='cita_fecha'){\n const valid=/^\\d{4}-\\d{2}-\\d{2}$/.test(m)&&!Number.isNaN(Date.parse(m+'T12:00:00Z'))&&new Date(m+'T12:00:00Z').toISOString().slice(0,10)===m;\n const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const d=Object.fromEntries(p.map(x=>[x.type,x.value]));const hoy=d.year+'-'+d.month+'-'+d.day;\n if(!valid||m<hoy)return end({},'⚠️ Esa fecha no es válida o ya pasó. Escribe otra fecha así: *AAAA-MM-DD* (por ejemplo, *2026-12-15*).\\n🏠 Escribe *0* para cancelar.');\n if(!(Number(b.servicio_id)>0&&Number(b.barbero_id)>0))return end(reset,'😔 Faltan datos para continuar. Escribe tu documento nuevamente.');\n return end({fecha_consulta:m,cita_hora:''},'','disponibilidad','disponibilidad',{fecha:m,servicio_id:Number(b.servicio_id),barbero_id:Number(b.barbero_id)});\n}\nif(s==='cita_hora'){\n if(/^cambiar fecha$/i.test(m))return end({estado:'cita_fecha',cita_opciones:''},'📅 Escribe una nueva fecha *AAAA-MM-DD*.');\n const h=opts[idx];if(typeof h!=='string'||!/^\\d{2}:\\d{2}$/.test(h))return end({},'⚠️ Elige el número de una hora disponible.\\n📅 Escribe *cambiar fecha* para elegir otro día.\\n🏠 Escribe *0* para cancelar.');\n return end({estado:'cita_confirmar',cita_hora:h},'🧾 *Confirma tu cita*\\n\\n👤 '+(limpiar(b.cita_nombres+' '+b.cita_apellidos)||'Cliente registrado')+'\\n✂️ '+limpiar(b.cita_servicio_nombre)+'\\n💈 '+limpiar(b.cita_barbero_nombre)+'\\n📅 '+b.fecha_consulta+'\\n🕒 '+h12(h)+'\\n\\n✅ Responde *SI* para agendar.\\n❌ Escribe *NO* para elegir otra hora.\\n🏠 Escribe *0* para cancelar.');\n}\nif(s==='cita_confirmar'){\n if(/^(s[ií]|confirmar)$/i.test(m)){\n  if(!(Number(b.cita_cliente_id)>0&&Number(b.servicio_id)>0&&Number(b.barbero_id)>0&&/^\\d{2}:\\d{2}$/.test(b.cita_hora)))return end(reset,'😔 Faltan datos. Vuelve a escribir tu documento.');\n  return end({},'','crear_cita','citas',{cliente_id:Number(b.cita_cliente_id),servicio_id:Number(b.servicio_id),barbero_id:Number(b.barbero_id),fecha_cita:b.fecha_consulta,hora_cita:b.cita_hora});\n }\n if(/^(no|otra|cambiar)$/i.test(m))return end({estado:'cita_hora',cita_hora:''},'🕒 *Elige otra hora para tu cita*. Responde con el número de la lista:\\n\\n'+opts.map((h,i)=>'*'+(i+1)+'.* '+h12(h)).join('\\n')+'\\n🏠 Escribe *0* para cancelar.');\n return end({},'⚠️ Para agendar esta cita, escribe *SI*. Si quieres elegir otra hora, escribe *NO*. Escribe *0* para volver al menú.');\n}\nreturn end(reset,'📅 Empecemos de nuevo. Escribe tu documento.');\n"
+      },
+      "id": "d0dc6ffd-62bd-485d-bc76-03f4c8a2bfd1",
+      "name": "Cita - Interpretar Mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$('Cita - Interpretar Mensaje').first().json;\nconst x=$input.first()?.json??{},status=Number(x.statusCode??(x.error?500:200)),ok=status>=200&&status<300&&!x.error;\nconst b=x.body??x,tipo=r.api_tipo;\nlet o={...r,necesita_api:false,siguiente_api:false};\nconst clean=s=>String(s??'').replace(/[\\r\\n*_~\\x60]/g,' ').trim();\nconst h12=h=>{const [a,z]=String(h).split(':').map(Number);return(a%12||12)+':'+String(z).padStart(2,'0')+(a<12?' a. m.':' p. m.')};\nconst lista=Array.isArray(b)?b:Array.isArray(b.data)?b.data:[];\nconst pesos=new Intl.NumberFormat('es-CO',{maximumFractionDigits:0});\nif(tipo==='buscar'){\n const c=b.cliente??b.data?.cliente??(b.data?.id?b.data:null)??(b.id?b:null);\n if(!ok&&!(status===404&&b.encontrado===false))o.respuesta='😔 No pudimos buscar tu documento. Escríbelo nuevamente para reintentar.';\n else if((b.encontrado===true||Number(c?.id)>0)&&Number(c?.id)>0){\n  o={...o,estado:'cita_servicio',cita_cliente_id:String(c.id),cita_nombres:clean(c.nombres??c.nombre??''),cita_apellidos:clean(c.apellidos??''),cita_telefono:String(c.telefono??''),siguiente_api:true,api_tipo:'catalogo',respuesta:''};\n }else if(b.encontrado===false||(!c&&b.success!==false)){\n  o={...o,estado:'cita_nombres',respuesta:'👋 No encontramos ese documento. Vamos a registrarte.\\n\\n✍️ Escribe tus *nombres*.\\n🏠 Escribe *0* para cancelar.'};\n }else o.respuesta='😔 La búsqueda no devolvió datos válidos. Escribe tu documento nuevamente.';\n}else if(tipo==='crear_cliente'){\n const c=b.cliente??b.data?.cliente??b.data??b;\n if(ok&&Number(c?.id)>0)o={...o,estado:'cita_servicio',cita_cliente_id:String(c.id),siguiente_api:true,api_tipo:'catalogo',respuesta:''};\n else o={...o,estado:'cita_telefono',respuesta:'😔 No pudimos registrar al cliente. Comprueba el teléfono e intenta nuevamente.\\n🏠 Escribe *0* para cancelar.'};\n}else if(tipo==='catalogo'||tipo==='barberos'){\n const buenos=lista.filter(v=>Number(v?.id)>0);\n if(ok&&buenos.length){\n  if(tipo==='catalogo')o={...o,estado:'cita_servicio',cita_opciones:JSON.stringify(buenos.map(v=>({id:v.id,nombre:v.nombre,precio:v.precio,duracion_minutos:v.duracion_minutos}))),respuesta:'✂️ *Elige un servicio*\\n\\n'+buenos.map((v,i)=>'*'+(i+1)+'.* '+clean(v.nombre)+' - '+(Number(v.duracion_minutos)||'?')+' min - '+(Number.isFinite(Number(v.precio))?'$'+pesos.format(Number(v.precio)):'Precio por confirmar')).join('\\n')+'\\n\\n💬 Responde con el número.\\n🏠 Escribe *0* para cancelar.'};\n  else o={...o,estado:'cita_barbero',cita_opciones:JSON.stringify(buenos.map(v=>({id:v.id,nombre:v.name??v.nombre}))),respuesta:'💈 *Elige un barbero*\\n\\n'+buenos.map((v,i)=>'*'+(i+1)+'.* '+clean(v.name??v.nombre)).join('\\n')+'\\n\\n💬 Responde con el número.\\n🏠 Escribe *0* para cancelar.'};\n }else o={...o,estado:tipo==='catalogo'?'cita_servicio':'cita_barbero',cita_opciones:'',respuesta:ok?'😔 No hay opciones disponibles. Escribe *servicios* o *barberos* para actualizar.':'😔 No pudimos consultar las opciones ahora. Escribe *servicios* o *barberos* para reintentar.'};\n}else if(tipo==='disponibilidad'){\n const h=lista.map(v=>typeof v==='string'?v:(v?.hora??v?.hora_cita??v?.time)).filter(v=>typeof v==='string'&&/^\\d{2}:\\d{2}/.test(v)).map(v=>v.slice(0,5));\n if(ok&&h.length)o={...o,estado:'cita_hora',cita_opciones:JSON.stringify(h),respuesta:'📅 *Horas disponibles para '+r.fecha_consulta+'*\\n\\n'+h.map((v,i)=>'🕒 *'+(i+1)+'.* '+h12(v)).join('\\n')+'\\n\\n💬 Responde con el número de la hora.\\n📅 Escribe *cambiar fecha* para consultar otro día.\\n🏠 Escribe *0* para cancelar.'};\n else o={...o,estado:'cita_fecha',cita_opciones:'',respuesta:ok?'😔 No hay horas disponibles para ese día. Escribe otra fecha *AAAA-MM-DD*.':'😔 Falló la consulta de disponibilidad. Escribe nuevamente la fecha para reintentar.'};\n}else if(tipo==='crear_cita'){\n if(ok&&(status===201||b.success===true||Number(b.cita_id)>0||Number(b.data?.cita_id)>0)){\n  const id=b.cita_id??b.data?.cita_id??b.cita?.id??'';\n  o={...o,estado:'menu_principal',ultima_opcion:'1',cita_opciones:'',cita_hora:'',respuesta:'✅ *¡Cita agendada correctamente!* 💈\\n\\n✂️ '+clean(r.cita_servicio_nombre)+'\\n💈 '+clean(r.cita_barbero_nombre)+'\\n📅 '+r.fecha_consulta+'\\n🕒 '+h12(r.cita_hora)+(id?'\\n🧾 Cita #'+id:'')+'\\n\\n🏠 Escribe *0* para el menú.'};\n }else if(status===409)o={...o,estado:'cita_fecha',cita_hora:'',cita_opciones:'',respuesta:'⚠️ Ese horario acaba de ser ocupado. *No se registró la cita.*\\n\\n📅 Escribe otra fecha *AAAA-MM-DD* para consultar disponibilidad.'};\n else o={...o,estado:'cita_confirmar',respuesta:'😔 No se pudo confirmar la reserva. Para evitar duplicados, consulta tus citas antes de volver a enviar *SI*.\\n🏠 Escribe *0* para cancelar.'};\n}\nreturn [{json:o}];"
+      },
+      "id": "9c228599-f764-4d1b-8ced-4341871fce9f",
+      "name": "Cita - Resolver Primera API",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.necesita_api }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "99938bf3-8d3c-45c4-9ac0-dc4917212f35",
+      "name": "IF - Cita Necesita API",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1856,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.api_metodo === 'GET' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0fb53fba-736d-472b-bb87-4cf15f4940b9",
+      "name": "IF - Cita Solicitud GET",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        2064,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.api_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 12000
+        }
+      },
+      "id": "5cd81de2-6da1-435d-8f96-8297ed8f6dda",
+      "name": "Laravel - Cita GET",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2288,
+        64
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.api_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.api_body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 12000
+        }
+      },
+      "id": "ead3d737-ca59-4948-8a9e-a176abd42780",
+      "name": "Laravel - Cita POST",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2288,
+        272
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.siguiente_api }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f2a7afd5-7cd1-4b04-92b3-4f235437cfdc",
+      "name": "IF - Cita Requiere Catálogo",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        2736,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://webserver/api/bot/servicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 12000
+        }
+      },
+      "id": "c48f6c1a-4d07-4218-ad6e-a49204bd1bb4",
+      "name": "Laravel - Cita Catálogo Adicional",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2944,
+        48
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$('Cita - Resolver Primera API').first().json;const x=$input.first()?.json??{};const status=Number(x.statusCode??(x.error?500:200));const ok=status>=200&&status<300&&!x.error;const b=x.body??x;const a=Array.isArray(b)?b:Array.isArray(b.data)?b.data:[];const buenos=a.filter(v=>Number(v?.id)>0);const clean=s=>String(s??'').replace(/[\\r\\n*_~\\x60]/g,' ').trim();const fmt=new Intl.NumberFormat('es-CO',{maximumFractionDigits:0});let o={...r,siguiente_api:false};\nif(ok&&buenos.length)o={...o,estado:'cita_servicio',cita_opciones:JSON.stringify(buenos.map(v=>({id:v.id,nombre:v.nombre,precio:v.precio,duracion_minutos:v.duracion_minutos}))),respuesta:'✅ Identificación completada.\\n\\n✂️ *Elige un servicio para tu cita*\\n\\n'+buenos.map((v,i)=>'*'+(i+1)+'.* '+clean(v.nombre)+' - '+(Number(v.duracion_minutos)||'?')+' min - '+(Number.isFinite(Number(v.precio))?'$'+fmt.format(Number(v.precio)):'Precio por confirmar')).join('\\n')+'\\n\\n💬 Responde con el número del servicio.\\n🏠 *0* para cancelar.'};\nelse o={...o,estado:'cita_servicio',cita_opciones:'',respuesta:'😔 No se pudo consultar el catálogo. Escribe *servicios* para reintentar.\\n🏠 *0* para cancelar.'};\nreturn [{json:o}];"
+      },
+      "id": "1e3d5cc8-0938-4b39-a7e3-055fe305daef",
+      "name": "Cita - Resolver Catálogo Adicional",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst fechaLegible = valor => {\n const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];\n const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];\n return String(valor??'').replace(/\\b(\\d{4})-(\\d{2})-(\\d{2})\\b/g,(coincidencia,anio,mes,dia,indice,texto)=>{\n  const anterior=texto.slice(Math.max(0,indice-60),indice);\n  if(/(?:por ejemplo,|ejemplo:)\\s*\\*?\\s*$/i.test(anterior))return coincidencia;\n  const d=new Date(Date.UTC(Number(anio),Number(mes)-1,Number(dia),12));\n  if(d.getUTCFullYear()!==Number(anio)||d.getUTCMonth()!==Number(mes)-1||d.getUTCDate()!==Number(dia))return coincidencia;\n  return dias[d.getUTCDay()]+' '+Number(dia)+' de '+meses[d.getUTCMonth()]+' de '+anio;\n });\n};\nconst r=$input.first().json;\nlet respuesta=fechaLegible(String(r.respuesta??'').trim()||'😔 No pudimos procesar tu solicitud. Escribe *0* para volver al menú.');\nreturn [{json:{...r,respuesta}}];"
+      },
+      "id": "97e0726d-eb4f-47fe-8592-85d54a80a196",
+      "name": "Cita - Resolver Mensaje Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2944,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "={{ $json.estado ?? '' }}",
+            "ultima_opcion": "={{ $json.ultima_opcion ?? '' }}",
+            "servicio_id": "={{ $json.servicio_id ?? '' }}",
+            "barbero_id": "={{ $json.barbero_id ?? '' }}",
+            "fecha_consulta": "={{ $json.fecha_consulta ?? '' }}",
+            "cita_cliente_id": "={{ $json.cita_cliente_id ?? '' }}",
+            "cita_documento": "={{ $json.cita_documento ?? '' }}",
+            "cita_nombres": "={{ $json.cita_nombres ?? '' }}",
+            "cita_apellidos": "={{ $json.cita_apellidos ?? '' }}",
+            "cita_telefono": "={{ $json.cita_telefono ?? '' }}",
+            "cita_opciones": "={{ $json.cita_opciones ?? '' }}",
+            "cita_hora": "={{ $json.cita_hora ?? '' }}",
+            "cita_servicio_nombre": "={{ $json.cita_servicio_nombre ?? '' }}",
+            "cita_barbero_nombre": "={{ $json.cita_barbero_nombre ?? '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_apellidos",
+              "displayName": "cita_apellidos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_barbero_nombre",
+              "displayName": "cita_barbero_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_cliente_id",
+              "displayName": "cita_cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_documento",
+              "displayName": "cita_documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_hora",
+              "displayName": "cita_hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_nombres",
+              "displayName": "cita_nombres",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_opciones",
+              "displayName": "cita_opciones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_servicio_nombre",
+              "displayName": "cita_servicio_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_telefono",
+              "displayName": "cita_telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3767df16-c30d-4917-84e4-32e9a731a2f3",
+      "name": "Cita - Guardar Memoria",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3136,
+        368
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('Cita - Resolver Mensaje Final').first().json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "323b879a-131a-481c-bd7b-8ae029e87a0e",
+      "name": "WhatsApp - Cita Responder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3344,
+        368
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst r=$('Data Table - Buscar Conversación').first().json;\nconst m=String($('Edit Fields - Procesar Datos Relevantes').first().json.mensaje_texto??'').trim();\nconst estado=String(r.estado??'menu_principal');\nconst campos=['estado','ultima_opcion','gestion_documento','gestion_telefono','gestion_cliente_id','gestion_citas','gestion_cita_id'];\nconst b=Object.fromEntries(campos.map(k=>[k,String(r[k]??'')]));\nconst api=(c={},msg='',tipo='',ruta='',body={})=>[{json:{...b,...c,respuesta:msg,requiere_api:!!tipo,api_tipo:tipo,api_url:tipo?'http://webserver/api/bot/'+ruta:'',api_body:body,consultar_tras_identificar:false}}];\nlet citas=[];try{citas=JSON.parse(b.gestion_citas);if(!Array.isArray(citas))citas=[]}catch{}\nconst n=/^[1-9]\\d*$/.test(m)?Number(m)-1:-1;\nconst fechaLocal=()=>{const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const d=Object.fromEntries(p.map(v=>[v.type,v.value]));return d.year+'-'+d.month+'-'+d.day};\nconst habilitada=c=>['pendiente','confirmado','confirmada'].includes(String(c.estado??'').toLowerCase()) && String(c.fecha_cita??'').slice(0,10)>=fechaLocal();\nif(!estado.startsWith('gestion_'))return api({estado:'gestion_documento',ultima_opcion:'4',gestion_documento:'',gestion_telefono:'',gestion_cliente_id:'',gestion_citas:'',gestion_cita_id:''},'📋 *Gestionar mis citas en BarberKing* 💈\\n\\n🪪 Escribe tu *documento de identidad* para consultar tus citas.\\n\\n🏠 Escribe *0* para volver al menú.');\nif(estado==='gestion_documento'){\n if(!/^\\d{5,15}$/.test(m))return api({},'⚠️ Escribe tu documento de identidad, de 5 a 15 dígitos.\\n🏠 Escribe *0* para volver al menú.');\n return api({gestion_documento:m,gestion_telefono:'',gestion_cliente_id:'',gestion_citas:'',gestion_cita_id:''},'','buscar_documento','clientes/buscar',{documento_identidad:m});\n}\nif(estado==='gestion_telefono'){\n const tel=m;\n if(!/^3\\d{9}$/.test(tel))return api({},'⚠️ Celular inválido. Debe comenzar por *3* y tener *exactamente 10 dígitos*.\\n🏠 Escribe *0* para volver al menú.');\n return api({gestion_telefono:tel},'','buscar','clientes/buscar',{documento_identidad:b.gestion_documento});\n}\nif(estado==='gestion_lista'){\n if(/^(consultar|actualizar|ver citas|mis citas)$/i.test(m)){\n  if(!(Number(b.gestion_cliente_id)>0))return api({estado:'gestion_documento'},'🪪 Escribe tu documento para identificarte nuevamente.');\n  return api({},'','consultar','citas/consultar',{cliente_id:Number(b.gestion_cliente_id),documento_identidad:b.gestion_documento});\n }\n if(n>=0){\n  const c=citas[n];\n  if(!c||!habilitada(c)||!(Number(c.id)>0))return api({},'⚠️ La cita seleccionada no se puede cancelar. Elige una cita futura *pendiente* o *confirmada*.\\n\\nℹ️ Las citas canceladas, completadas o que ya pasaron no se pueden cancelar.\\n🔄 Escribe *consultar* para actualizar el listado.\\n🏠 Escribe *0* para el menú.');\n  const fecha=String(c.fecha_cita).slice(0,10),hora=String(c.hora_cita??'').slice(0,5);\n  return api({estado:'gestion_confirmar',gestion_cita_id:String(c.id)},'⚠️ *¿Confirmas cancelar esta cita?*\\n\\n🧾 Cita #'+c.id+'\\n📅 '+fecha+'\\n🕒 '+hora+'\\n✂️ '+String(c.servicio_nombre??'Servicio')+'\\n\\n❗ Si cancelas esta cita, tendrás que agendar una nueva si cambias de opinión.\\n\\n✅ Escribe *SI CANCELAR* para confirmar.\\n❌ Escribe *NO* para mantener tu cita.\\n🏠 Escribe *0* para volver al menú.');\n }\n if(/^(cancelar|anular)$/i.test(m)){\n  const disponibles=citas.map((c,i)=>({c,i})).filter(({c})=>habilitada(c));\n  if(!disponibles.length)return api({},'📋 No tienes citas futuras pendientes o confirmadas que puedas cancelar. Las citas canceladas o completadas no se pueden cancelar otra vez.\\n\\n🔄 Escribe *consultar* para actualizar la lista.\\n🏠 Escribe *0* para el menú.');\n  return api({estado:'gestion_elegir'},'❌ *Cancelar una cita*\\n\\nEscribe el *número de la lista* que aparece al inicio de la cita que quieres cancelar (por ejemplo, *2* si es la segunda).\\n\\n📝 Solo pueden cancelarse citas pendientes o confirmadas que todavía no hayan pasado.\\n🏠 Escribe *0* para salir.');\n }\n return api({},'💬 Si deseas cancelar una cita, escribe el número que aparece al inicio de esa cita.\\n🔄 Escribe *consultar* para actualizar la lista.\\n🏠 Escribe *0* para el menú.');\n}\nif(estado==='gestion_elegir'){\n const c=citas[n];\n if(!c||!habilitada(c)||!(Number(c.id)>0))return api({},'⚠️ Esa cita no está disponible para cancelar. Elige el número de una cita futura *pendiente* o *confirmada* de la lista.\\n🏠 Escribe *0* para cancelar la operación.');\n const fecha=String(c.fecha_cita).slice(0,10),hora=String(c.hora_cita??'').slice(0,5);\n return api({estado:'gestion_confirmar',gestion_cita_id:String(c.id)},'⚠️ *¿Confirmas cancelar esta cita?*\\n\\n🧾 Cita #'+c.id+'\\n📅 '+fecha+'\\n🕒 '+hora+'\\n✂️ '+String(c.servicio_nombre??'Servicio')+'\\n\\n❗ Si cancelas esta cita, tendrás que agendar una nueva si cambias de opinión.\\n\\n✅ Escribe *SI CANCELAR* para confirmar.\\n❌ Escribe *NO* para mantener tu cita.\\n🏠 Escribe *0* para volver al menú.');\n}\nif(estado==='gestion_confirmar'){\n if(/^(no|mantener|volver)$/i.test(m))return api({estado:'gestion_lista',gestion_cita_id:''},'✅ Tu cita se mantiene sin cambios.\\n🔄 Escribe *consultar* para ver tus citas.\\n🏠 Escribe *0* para el menú.');\n if(/^si cancelar$/i.test(m.toLowerCase())){\n  const c=citas.find(x=>String(x.id)===b.gestion_cita_id);\n  if(!c||!habilitada(c))return api({estado:'gestion_lista',gestion_cita_id:''},'⚠️ Esta cita ya no es elegible para cancelación. Escribe *consultar* para actualizar tus citas.');\n  return api({},'','cancelar','citas/cancelar',{cita_id:Number(c.id),cliente_id:Number(b.gestion_cliente_id),documento_identidad:b.gestion_documento,telefono_whatsapp:b.gestion_telefono});\n }\n return api({},'⚠️ Escribe exactamente *SI CANCELAR* si quieres cancelar la cita.\\nSi prefieres conservarla, escribe *NO*.\\n🏠 Escribe *0* para el menú.');\n}\nreturn api({estado:'gestion_documento'},'🪪 Vamos a consultar tus citas nuevamente. Escribe tu documento.');\n"
+      },
+      "id": "31ca3590-655d-44f8-ad2e-5a7b3be226ed",
+      "name": "Gestion - Interpretar Mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.requiere_api }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c34693a3-8809-4c00-b330-e8ed4c95eb0e",
+      "name": "IF - Gestion Necesita API",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1840,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.api_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.api_body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 12000
+        }
+      },
+      "id": "f02f72d0-c043-46f7-aebe-8bac1076f45e",
+      "name": "Laravel - Gestion Primera API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2048,
+        944
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst r=$('Gestion - Interpretar Mensaje').first().json;\nconst x=$input.first()?.json??{},status=Number(x.statusCode??(x.error?500:200)),ok=status>=200&&status<300&&!x.error,body=x.body??x;\nlet y={...r,requiere_api:false,consultar_tras_identificar:false};\nconst tipo=r.api_tipo;\nconst clean=s=>String(s??'').replace(/[\\r\\n*_~\\x60]/g,' ').trim();\nconst list=v=>Array.isArray(v)?v:Array.isArray(v?.citas)?v.citas:Array.isArray(v?.data)?v.data:Array.isArray(v?.data?.citas)?v.data.citas:[];\nconst h12=h=>{const [hour,minutes]=String(h??'').split(':').map(Number);if(!Number.isFinite(hour)||!Number.isFinite(minutes))return 'Hora por confirmar';return(hour%12||12)+':'+String(minutes).padStart(2,'0')+(hour<12?' a. m.':' p. m.')};\nif(tipo==='buscar_documento'){\n const c=body.cliente??body.data?.cliente??(body.data?.id?body.data:null)??(body.id?body:null);\n const encontrado=ok&&Number(c?.id)>0;\n if(encontrado){\n  y={...y,estado:'gestion_telefono',respuesta:'🔐 *Verificación de identidad*\\n\\n📱 Escribe el *número de teléfono que registraste en la barbería* cuando te inscribiste.\\n\\n💬 Debe comenzar por *3* y tener *exactamente 10 dígitos*.\\n🏠 Escribe *0* para volver al menú.'};\n }else if((status===404&&body.encontrado===false)||(ok&&body.encontrado===false)){\n  y={...y,estado:'gestion_documento',gestion_documento:'',gestion_telefono:'',gestion_cliente_id:'',gestion_citas:'',gestion_cita_id:'',respuesta:'⚠️ *No encontramos ese documento registrado en BarberKing.*\\n\\n🪪 Comprueba el número e inténtalo nuevamente.\\n📅 Si aún no te has registrado, escribe *0* para volver al menú y selecciona *1* para agendar tu primera cita.'};\n }else{\n  y={...y,estado:'gestion_documento',gestion_documento:'',gestion_telefono:'',gestion_cliente_id:'',gestion_citas:'',gestion_cita_id:'',respuesta:'😔 *No pudimos consultar tu documento en este momento.*\\n\\n🪪 Escríbelo nuevamente para reintentar.\\n🏠 Escribe *0* para volver al menú.'};\n }\n}else if(tipo==='buscar'){\n const c=body.cliente??body.data?.cliente??(body.data?.id?body.data:null)??(body.id?body:null);\n const ingresado=String(r.gestion_telefono??'').replace(/\\D/g,'');\n const registrado=String(c?.telefono??'').replace(/\\D/g,'');\n const igual=/^3\\d{9}$/.test(ingresado)&&/^3\\d{9}$/.test(registrado)&&ingresado===registrado;\n if(ok&&Number(c?.id)>0&&igual){\n  y={...y,gestion_cliente_id:String(c.id),consultar_tras_identificar:true,respuesta:''};\n }else{\n  y={...y,estado:'gestion_documento',gestion_documento:'',gestion_telefono:'',gestion_cliente_id:'',gestion_citas:'',gestion_cita_id:'',respuesta:'🔒 *No pudimos verificar tu identidad.*\\n\\nComprueba que hayas escrito el documento y el teléfono registrados en BarberKing.\\n\\n🪪 Escribe nuevamente tu documento para intentarlo de nuevo.\\n🏠 Escribe *0* para volver al menú.'};\n }\n}else if(tipo==='consultar'){\n if(!ok)y={...y,estado:'gestion_lista',respuesta:'😔 No pudimos obtener tus citas. Escribe *consultar* para reintentar.\\n🏠 Escribe *0* para el menú.'};\n else{\n  const a=list(body).map(c=>({\n   id:c.id,fecha_cita:String(c.fecha_cita??'').slice(0,10),hora_cita:String(c.hora_cita??'').slice(0,5),estado:String(c.estado??'Pendiente'),\n   servicio_nombre:c.servicio?.nombre??c.servicio_nombre??'Servicio',barbero_nombre:c.barbero?.name??c.barbero_nombre??'Barbero'\n  })).filter(c=>Number(c.id)>0).slice(0,25);\n  y={...y,estado:'gestion_lista',gestion_citas:JSON.stringify(a),respuesta:a.length?'📋 *Tus citas en BarberKing*\\n\\n'+a.map((c,i)=>'*'+(i+1)+'.* 🧾 #'+c.id+' · '+c.fecha_cita+' · '+h12(c.hora_cita)+'\\n✂️ '+clean(c.servicio_nombre)+' | 💈 '+clean(c.barbero_nombre)+'\\n📌 Estado: '+clean(c.estado)).join('\\n\\n')+'\\n\\n❌ Escribe *cancelar* para seleccionar una cita.\\n🔄 Escribe *consultar* para actualizar.\\n🏠 Escribe *0* para el menú.':'📋 No encontramos citas asociadas a tu documento.\\n\\n🔄 Escribe *consultar* para actualizar.\\n🏠 Escribe *0* para el menú.'};\n }\n}else if(tipo==='cancelar'){\n if(ok&&(body.success===true||body.cancelada===true||status===200&&String(body.estado??'').toLowerCase()==='cancelado')){\n  y={...y,estado:'gestion_lista',gestion_cita_id:'',gestion_citas:'',respuesta:'✅ *Tu cita #'+r.gestion_cita_id+' fue cancelada correctamente.*\\n\\n🔄 Escribe *consultar* para ver tus citas actualizadas.\\n🏠 Escribe *0* para el menú.'};\n }else if(status===404)y={...y,estado:'gestion_lista',gestion_cita_id:'',respuesta:'😔 No existe todavía el servicio de cancelación o la cita no fue encontrada. No hemos confirmado ningún cambio. Contacta a la barbería para cancelarla.'};\n else if(status===403||status===409||status===422)y={...y,estado:'gestion_lista',gestion_cita_id:'',respuesta:'⚠️ Laravel rechazó la cancelación (cita no elegible, ya actualizada o identidad no válida). Escribe *consultar* para actualizar tus citas.'};\n else y={...y,estado:'gestion_lista',gestion_cita_id:'',respuesta:'😔 No pudimos confirmar la cancelación. Consulta el estado de la cita antes de volver a intentarlo.'};\n}\nreturn [{json:y}];"
+      },
+      "id": "f054c53e-58a7-4875-b1ca-199bfe05e58e",
+      "name": "Gestion - Resolver Primera API",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.consultar_tras_identificar }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "400ed17d-8072-4d9f-8690-782382a10592",
+      "name": "IF - Gestion Consulta Tras Identificar",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        2464,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://webserver/api/bot/citas/consultar",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {cliente_id:Number($json.gestion_cliente_id),documento_identidad:$json.gestion_documento} }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 12000
+        }
+      },
+      "id": "a8819f2d-241e-416e-85f2-68b0e8314360",
+      "name": "Laravel - Gestion Consultar Citas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2688,
+        784
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LkjLI6mlBhqxGZA0",
+          "name": "BarberKing - Laravel Bot API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$('Gestion - Resolver Primera API').first().json;const x=$input.first()?.json??{};const status=Number(x.statusCode??(x.error?500:200)),ok=status>=200&&status<300&&!x.error,b=x.body??x;\nconst arr=Array.isArray(b)?b:Array.isArray(b?.citas)?b.citas:Array.isArray(b?.data)?b.data:Array.isArray(b?.data?.citas)?b.data.citas:[];\nconst clean=s=>String(s??'').replace(/[\\r\\n*_~\\x60]/g,' ').trim();\nconst fmt=h=>{const [a,z]=String(h??'').split(':').map(Number);return Number.isFinite(a)&&Number.isFinite(z)?(a%12||12)+':'+String(z).padStart(2,'0')+(a<12?' a. m.':' p. m.'):'Hora por confirmar'};\nlet o={...r,consultar_tras_identificar:false};\nif(ok){\n const citas=arr.map(c=>({id:c.id,fecha_cita:String(c.fecha_cita??'').slice(0,10),hora_cita:String(c.hora_cita??'').slice(0,5),estado:String(c.estado??'Pendiente'),servicio_nombre:c.servicio?.nombre??c.servicio_nombre??'Servicio',barbero_nombre:c.barbero?.name??c.barbero_nombre??'Barbero'})).filter(c=>Number(c.id)>0).slice(0,25);\n o={...o,estado:'gestion_lista',gestion_citas:JSON.stringify(citas),respuesta:citas.length?'📋 *Tus citas en BarberKing*\\n\\n'+citas.map((c,i)=>'*'+(i+1)+'.* 🧾 #'+c.id+' · '+c.fecha_cita+' · '+fmt(c.hora_cita)+'\\n✂️ '+clean(c.servicio_nombre)+' | 💈 '+clean(c.barbero_nombre)+'\\n📌 Estado: '+clean(c.estado)).join('\\n\\n')+'\\n\\n❌ Escribe *cancelar* para seleccionar una cita.\\n🔄 Escribe *consultar* para actualizar.\\n🏠 Escribe *0* para el menú.':'📋 No encontramos citas asociadas a tu documento.\\n🔄 Escribe *consultar* para actualizar.\\n🏠 Escribe *0* para el menú.'};\n}else o={...o,estado:'gestion_lista',respuesta:'😔 No pudimos consultar tus citas ahora. Escribe *consultar* para reintentar.\\n🏠 Escribe *0* para el menú.'};\nreturn [{json:o}];"
+      },
+      "id": "1f8a1d31-6b34-4288-8628-b92d379f9e87",
+      "name": "Gestion - Formatear Citas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst fechaLegible = valor => {\n const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];\n const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];\n return String(valor??'').replace(/\\b(\\d{4})-(\\d{2})-(\\d{2})\\b/g,(coincidencia,anio,mes,dia)=>{\n  const d=new Date(Date.UTC(Number(anio),Number(mes)-1,Number(dia),12));\n  if(d.getUTCFullYear()!==Number(anio)||d.getUTCMonth()!==Number(mes)-1||d.getUTCDate()!==Number(dia))return coincidencia;\n  return dias[d.getUTCDay()]+' '+Number(dia)+' de '+meses[d.getUTCMonth()]+' de '+anio;\n });\n};\nconst estadoLegible = texto => String(texto).replace(/(\\bEstado:\\s*)([^\\n\\r]+)/gi,(_,prefijo,estado)=>prefijo+estado.trim().charAt(0).toLocaleUpperCase('es-CO')+estado.trim().slice(1).toLocaleLowerCase('es-CO'));\nconst horaLegible=mensaje=>String(mensaje).replace(/(🕒\\s)([01]\\d|2[0-3]):([0-5]\\d)(?!\\s*[ap]\\.)/g,(_,prefijo,hora,minutos)=>{const h=Number(hora);return prefijo+(h%12||12)+':'+minutos+(h<12?' a. m.':' p. m.')});\nconst r=$input.first().json;\nlet respuesta=String(r.respuesta??'').trim()||'😔 No fue posible completar esta solicitud. Escribe *0* para volver al menú.';\nif(respuesta.includes('📋 *Tus citas en BarberKing*')){\n let lista=[];try{lista=JSON.parse(r.gestion_citas??'[]');if(!Array.isArray(lista))lista=[]}catch{}\n const activos=lista.filter(c=>['pendiente','confirmado','confirmada'].includes(String(c.estado??'').trim().toLowerCase()));\n const tieneCancelable=activos.some(c=>String(c.fecha_cita??'').slice(0,10)>=(()=>{const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const o=Object.fromEntries(p.map(x=>[x.type,x.value]));return o.year+'-'+o.month+'-'+o.day})());\n const pie='❌ Escribe *cancelar* para seleccionar una cita.\\n🔄 Escribe *consultar* para actualizar.\\n🏠 Escribe *0* para el menú.';\n const nuevoPie=tieneCancelable\n  ? '❌ Para cancelar una cita, escribe el *número que aparece al inicio* de esa cita.\\n🔄 Escribe *consultar* para ver los datos más recientes.\\n🏠 Escribe *0* para volver al menú.'\n  : 'ℹ️ No tienes citas futuras pendientes o confirmadas para cancelar.\\n🔄 Escribe *consultar* para ver los datos más recientes.\\n🏠 Escribe *0* para volver al menú.';\n respuesta=respuesta.replace(pie,nuevoPie);\n}\nrespuesta=estadoLegible(fechaLegible(horaLegible(respuesta)));\nreturn [{json:{...r,respuesta}}];"
+      },
+      "id": "708f49d8-9b44-465f-8e81-0a51da902684",
+      "name": "Gestion - Preparar Respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ZXvP0ybLXbH512pB",
+          "cachedResultName": "barberking_conversaciones"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "cliente_id",
+              "keyValue": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "={{ $json.estado ?? '' }}",
+            "ultima_opcion": "={{ $json.ultima_opcion ?? '' }}",
+            "gestion_documento": "={{ $json.gestion_documento ?? '' }}",
+            "gestion_cliente_id": "={{ $json.gestion_cliente_id ?? '' }}",
+            "gestion_citas": "={{ $json.gestion_citas ?? '' }}",
+            "gestion_cita_id": "={{ $json.gestion_cita_id ?? '' }}",
+            "gestion_telefono": "={{ $json.gestion_telefono ?? '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "barbero_id",
+              "displayName": "barbero_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_apellidos",
+              "displayName": "cita_apellidos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_barbero_nombre",
+              "displayName": "cita_barbero_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_cliente_id",
+              "displayName": "cita_cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_documento",
+              "displayName": "cita_documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_hora",
+              "displayName": "cita_hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_nombres",
+              "displayName": "cita_nombres",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_opciones",
+              "displayName": "cita_opciones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_servicio_nombre",
+              "displayName": "cita_servicio_nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cita_telefono",
+              "displayName": "cita_telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cliente_id",
+              "displayName": "cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_consulta",
+              "displayName": "fecha_consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_cita_id",
+              "displayName": "gestion_cita_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_citas",
+              "displayName": "gestion_citas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_cliente_id",
+              "displayName": "gestion_cliente_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_documento",
+              "displayName": "gestion_documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gestion_telefono",
+              "displayName": "gestion_telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio_id",
+              "displayName": "servicio_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ultima_opcion",
+              "displayName": "ultima_opcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1a03c79-945e-4084-ab47-4bf87152d04c",
+      "name": "Gestion - Guardar Estado",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2928,
+        1088
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://evolution-api:8080/message/sendText/BarberKing",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Edit Fields - Procesar Datos Relevantes').first().json.cliente_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('Gestion - Preparar Respuesta').first().json.respuesta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e9bc0d8-f21f-446e-acee-1c64df001e52",
+      "name": "WhatsApp - Gestion Responder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3136,
+        1088
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "EDejIeUsi36YhUIO",
+          "name": "BarberKing - Evolution API"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook - Evolution API Reenvía Todos los Mensajes que Llegan": [
+      {
+        "json": {
+          "headers": {
+            "accept": "application/json, text/plain, */*",
+            "content-type": "application/json",
+            "user-agent": "axios/1.13.2",
+            "content-length": "1656",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "n8n:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "BarberKing",
+            "data": {
+              "key": {
+                "remoteJid": "73718936166429@lid",
+                "fromMe": false,
+                "id": "3EB093E7F9399A782E9CFA",
+                "participant": "",
+                "addressingMode": "lid"
+              },
+              "pushName": "Sam",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "messageContextInfo": {
+                  "threadId": [],
+                  "deviceListMetadata": {
+                    "senderKeyIndexes": [],
+                    "recipientKeyIndexes": [],
+                    "senderKeyHash": {
+                      "0": 84,
+                      "1": 42,
+                      "2": 185,
+                      "3": 63,
+                      "4": 70,
+                      "5": 239,
+                      "6": 224,
+                      "7": 212,
+                      "8": 225,
+                      "9": 95
+                    },
+                    "senderTimestamp": {
+                      "low": 1794779302,
+                      "high": 0,
+                      "unsigned": true
+                    },
+                    "senderAccountType": 0,
+                    "receiverAccountType": 0,
+                    "recipientKeyHash": {
+                      "0": 4,
+                      "1": 81,
+                      "2": 130,
+                      "3": 247,
+                      "4": 10,
+                      "5": 99,
+                      "6": 3,
+                      "7": 18,
+                      "8": 254,
+                      "9": 73
+                    },
+                    "recipientTimestamp": {
+                      "low": 1795010328,
+                      "high": 0,
+                      "unsigned": true
+                    }
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": {
+                    "0": 119,
+                    "1": 200,
+                    "2": 202,
+                    "3": 125,
+                    "4": 215,
+                    "5": 175,
+                    "6": 230,
+                    "7": 57,
+                    "8": 36,
+                    "9": 158,
+                    "10": 5,
+                    "11": 237,
+                    "12": 81,
+                    "13": 54,
+                    "14": 174,
+                    "15": 216,
+                    "16": 81,
+                    "17": 183,
+                    "18": 243,
+                    "19": 84,
+                    "20": 206,
+                    "21": 55,
+                    "22": 50,
+                    "23": 20,
+                    "24": 192,
+                    "25": 40,
+                    "26": 243,
+                    "27": 131,
+                    "28": 69,
+                    "29": 73,
+                    "30": 27,
+                    "31": 22
+                  },
+                  "limitSharingV2": {
+                    "trigger": 0,
+                    "initiatedByMe": false
+                  }
+                },
+                "conversation": "Hola"
+              },
+              "contextInfo": {
+                "mentionedJid": [],
+                "groupMentions": [],
+                "statusAttributions": [],
+                "ephemeralSettingTimestamp": {
+                  "low": 1794848643,
+                  "high": 0,
+                  "unsigned": false
+                },
+                "disappearingMode": {
+                  "initiator": 0,
+                  "trigger": 1,
+                  "initiatedByMe": false
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1795022607,
+              "instanceId": "f1521f58-e76d-4b5a-873b-6c909c3d44c6",
+              "source": "web"
+            },
+            "destination": "http://n8n:5678/webhook/barberking-whatsapp",
+            "date_time": "2026-11-18T12:23:32.359Z",
+            "sender": "573134346025@s.whatsapp.net",
+            "server_url": "http://localhost:8080",
+            "apikey": "6C5DFCE7A929-425A-B78A-DD35F3069C20"
+          },
+          "webhookUrl": "http://localhost:5678/webhook/barberking-whatsapp",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook - Evolution API Reenvía Todos los Mensajes que Llegan": {
+      "main": [
+        [
+          {
+            "node": "If - Unicamente Procesar Mensajes de Clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - Unicamente Procesar Mensajes de Clientes": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields - Procesar Datos Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Validar Mensaje de Texto": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Buscar Conversación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Advertir Mensaje No Admitido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields - Procesar Datos Relevantes": {
+      "main": [
+        [
+          {
+            "node": "IF - Validar Mensaje de Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Identificar Petición": {
+      "main": [
+        [
+          {
+            "node": "Cita - Interpretar Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Data Table - Guardar Estado Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Laravel - Horarios Listar Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gestion - Interpretar Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Data Table - Restablecer Menú",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Fallback (Menú)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Laravel - Horarios Validar Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Laravel - Horarios Validar Barbero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code - Horarios Validar Fecha",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp - Horarios Consulta Finalizada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cita - Interpretar Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gestion - Interpretar Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Advertir Mensaje No Admitido": {
+      "main": [
+        [
+          {
+            "node": "NoOp 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Buscar Conversación": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Cliente Nuevo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Cliente Nuevo?": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Registrar Conversación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch - Identificar Petición",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Registrar Conversación": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Bienvenida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Guardar Estado Servicios": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Laravel Catálogo de Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Laravel Catálogo de Servicios": {
+      "main": [
+        [
+          {
+            "node": "Code - Formatear Catálogo WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Formatear Catálogo WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Consultar Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Restablecer Menú": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Repetir Menú",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Horarios Listar Servicios": {
+      "main": [
+        [
+          {
+            "node": "Code - Horarios Mostrar Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Mostrar Servicios": {
+      "main": [
+        [
+          {
+            "node": "Estado - Horarios Elegir Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado - Horarios Elegir Servicio": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Horarios Lista Servicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Horarios Validar Servicio": {
+      "main": [
+        [
+          {
+            "node": "Code - Horarios Seleccionar Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Seleccionar Servicio": {
+      "main": [
+        [
+          {
+            "node": "IF - Horarios Servicio Valido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Horarios Servicio Valido": {
+      "main": [
+        [
+          {
+            "node": "Estado - Horarios Elegir Barbero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp - Horarios Servicio Invalido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado - Horarios Elegir Barbero": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Horarios Listar Barberos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Horarios Listar Barberos": {
+      "main": [
+        [
+          {
+            "node": "Code - Horarios Mostrar Barberos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Mostrar Barberos": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Horarios Barberos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Horarios Validar Barbero": {
+      "main": [
+        [
+          {
+            "node": "Code - Horarios Seleccionar Barbero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Seleccionar Barbero": {
+      "main": [
+        [
+          {
+            "node": "IF - Horarios Barbero Valido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Horarios Barbero Valido": {
+      "main": [
+        [
+          {
+            "node": "Estado - Horarios Elegir Fecha",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp - Horarios Barbero Invalido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado - Horarios Elegir Fecha": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Horarios Pedir Fecha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Validar Fecha": {
+      "main": [
+        [
+          {
+            "node": "IF - Horarios Fecha Valida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Horarios Fecha Valida": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Horarios Consultar Disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp - Horarios Fecha Invalida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Horarios Consultar Disponibilidad": {
+      "main": [
+        [
+          {
+            "node": "Code - Horarios Formatear Disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Horarios Formatear Disponibilidad": {
+      "main": [
+        [
+          {
+            "node": "Estado - Horarios Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado - Horarios Resultado": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Horarios Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita - Interpretar Mensaje": {
+      "main": [
+        [
+          {
+            "node": "IF - Cita Necesita API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Cita Necesita API": {
+      "main": [
+        [
+          {
+            "node": "IF - Cita Solicitud GET",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cita - Resolver Mensaje Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Cita Solicitud GET": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Cita GET",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Laravel - Cita POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Cita GET": {
+      "main": [
+        [
+          {
+            "node": "Cita - Resolver Primera API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Cita POST": {
+      "main": [
+        [
+          {
+            "node": "Cita - Resolver Primera API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita - Resolver Primera API": {
+      "main": [
+        [
+          {
+            "node": "IF - Cita Requiere Catálogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Cita Requiere Catálogo": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Cita Catálogo Adicional",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cita - Resolver Mensaje Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Cita Catálogo Adicional": {
+      "main": [
+        [
+          {
+            "node": "Cita - Resolver Catálogo Adicional",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita - Resolver Catálogo Adicional": {
+      "main": [
+        [
+          {
+            "node": "Cita - Resolver Mensaje Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita - Resolver Mensaje Final": {
+      "main": [
+        [
+          {
+            "node": "Cita - Guardar Memoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita - Guardar Memoria": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Cita Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestion - Interpretar Mensaje": {
+      "main": [
+        [
+          {
+            "node": "IF - Gestion Necesita API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Gestion Necesita API": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Gestion Primera API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gestion - Preparar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Gestion Primera API": {
+      "main": [
+        [
+          {
+            "node": "Gestion - Resolver Primera API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestion - Resolver Primera API": {
+      "main": [
+        [
+          {
+            "node": "IF - Gestion Consulta Tras Identificar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Gestion Consulta Tras Identificar": {
+      "main": [
+        [
+          {
+            "node": "Laravel - Gestion Consultar Citas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gestion - Preparar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Laravel - Gestion Consultar Citas": {
+      "main": [
+        [
+          {
+            "node": "Gestion - Formatear Citas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestion - Formatear Citas": {
+      "main": [
+        [
+          {
+            "node": "Gestion - Preparar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestion - Preparar Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Gestion - Guardar Estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gestion - Guardar Estado": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Gestion Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "3848cf6a-f05e-46dc-bb19-93a393642d89",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "b984433ac92e42fed672055d1f9b723851555f747d6996021eb1f7c0aeed944b"
+  },
+  "nodeGroups": [
+    {
+      "id": "cb2cb1f1-7458-4f21-90f5-17edda2781b7",
+      "name": "01 · Agendamiento por WhatsApp",
+      "nodeIds": [
+        "d0dc6ffd-62bd-485d-bc76-03f4c8a2bfd1",
+        "99938bf3-8d3c-45c4-9ac0-dc4917212f35",
+        "0fb53fba-736d-472b-bb87-4cf15f4940b9",
+        "5cd81de2-6da1-435d-8f96-8297ed8f6dda",
+        "ead3d737-ca59-4948-8a9e-a176abd42780",
+        "9c228599-f764-4d1b-8ced-4341871fce9f",
+        "f2a7afd5-7cd1-4b04-92b3-4f235437cfdc",
+        "c48f6c1a-4d07-4218-ad6e-a49204bd1bb4",
+        "1e3d5cc8-0938-4b39-a7e3-055fe305daef",
+        "97e0726d-eb4f-47fe-8592-85d54a80a196",
+        "3767df16-c30d-4917-84e4-32e9a731a2f3",
+        "323b879a-131a-481c-bd7b-8ae029e87a0e"
+      ],
+      "description": "Identificación, registro, selección, disponibilidad, confirmación y persistencia"
+    },
+    {
+      "id": "632beac7-29f9-4dfe-b2e6-d76cded767bd",
+      "name": "04 · Gestión de citas por WhatsApp",
+      "nodeIds": [
+        "31ca3590-655d-44f8-ad2e-5a7b3be226ed",
+        "c34693a3-8809-4c00-b330-e8ed4c95eb0e",
+        "f02f72d0-c043-46f7-aebe-8bac1076f45e",
+        "f054c53e-58a7-4875-b1ca-199bfe05e58e",
+        "400ed17d-8072-4d9f-8690-782382a10592",
+        "a8819f2d-241e-416e-85f2-68b0e8314360",
+        "1f8a1d31-6b34-4288-8628-b92d379f9e87",
+        "708f49d8-9b44-465f-8e81-0a51da902684",
+        "f1a03c79-945e-4084-ab47-4bf87152d04c",
+        "2e9bc0d8-f21f-446e-acee-1c64df001e52"
+      ],
+      "description": "Identificación, consulta de citas, selección y cancelación con confirmación"
+    }
+  ],
+  "id": "WPUMExcTw9aDNEOy",
+  "tags": []
+}
