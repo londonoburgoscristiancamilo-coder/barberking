@@ -23,8 +23,11 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Datos locales de n8n
-/n8n_data
+# Respaldos y datos privados
+/backups/
+/.env
+/.env.*
+!/.env.example
 
 # Sesiones y almacenamiento de Evolution API
 /evolution_instances
